@@ -147,6 +147,9 @@ p {
 .icon-hire {
     background-image: url(../image/user-check.png);
 }
+.icon-clock {
+    background-image: url(../image/clock.png);
+}
 
 #app {
     height: 100%;

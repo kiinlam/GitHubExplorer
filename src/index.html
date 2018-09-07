@@ -182,6 +182,7 @@
                 </div>
                 <div class="mt-10" font="f20">{{ loginUser.name }}</div>
                 <div class="mb-10" font="f12" color="minor">{{ loginUser.login }}</div>
+                <div class="mb-10" font="f12" color="minor">{{ loginUser.url }}</div>
                 <div>{{ loginUser.bio }}</div>
                 <div class="mt-10 pt-10" border="top" color="dark">
                   <div class="mb-5" v-if="loginUser.company">
@@ -201,26 +202,22 @@
                     <span class="ml-5">{{ loginUser.websiteUrl }}</span>
                   </div>
                 </div>
-                <div class="mt-10 pt-10" border="top" color="dark">
-                  <div class="mb-5" v-if="loginUser.isHireable">
+                <div class="mt-10 pt-10" border="top" color="dark" v-if="loginUser.isHireable">
+                  <div class="mb-5">
                     <span class="icon icon-hire"></span>
                     <span class="ml-5">正在寻找新的机会</span>
+                  </div>
+                </div>
+                <div class="mt-10 pt-10" border="top" color="dark">
+                  <div class="mb-5">
+                    <span class="icon icon-clock"></span>
+                    <span class="ml-5" font="f12" color="minor">{{ loginUser.createdAt }}加入</span>
                   </div>
                 </div>
               </div>
 
               <!-- Github信息 -->
               <div class="pb-10" flex="1" style="overflow: auto">
-                <div layout="flex" padding="10" border="bottom">
-                  <span class="w100" color="minor">GitHub</span>
-                  <span>{{ loginUser.url }}</span>
-                </div>
-
-                <div layout="flex" padding="10" border="bottom">
-                  <span class="w100" color="minor">加入时间</span>
-                  <span>{{ loginUser.createdAt }}</span>
-                </div>
-
                 <p class="bg-minor pt-20" padding="10" border="bottom">统计</p>
 
                 <div layout="flex" border="bottom" text="center">

@@ -12,7 +12,7 @@ new Vue({
     nodeType: '', // 当前类别
     subjectType: '',
     currentNode: null, // 当前数据节点
-    filterList: [], // 过滤列表
+    filterList: [] // 过滤列表
   },
   created: function () {
     if (this.token) {
