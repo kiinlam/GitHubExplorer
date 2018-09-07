@@ -1,0 +1,236 @@
+html {
+    height: 100%;
+}
+body {
+    height: 100%;
+    font-family: Avenir,Helvetica,'\5FAE\8F6F\96C5\9ED1',Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+p {
+    margin: 0;
+}
+
+.img-wrap img {
+    width: 100%;
+}
+
+.ml-3 {
+    margin-left: 3px;
+}
+.ml-5 {
+    margin-left: 5px;
+}
+.mt-5 {
+    margin-top: 5px;
+}
+.mt-10 {
+    margin-top: 10px;
+}
+.mr-3 {
+    margin-right: 3px;
+}
+.mr-10 {
+    margin-right: 10px;
+}
+.mr-20 {
+    margin-right: 20px;
+}
+.mb-5 {
+    margin-bottom: 5px;
+}
+.mb-10 {
+    margin-bottom: 10px;
+}
+.ml-10 {
+    margin-left: 10px;
+}
+.pt-10 {
+    padding-top: 10px;
+}
+.pt-20 {
+    padding-top: 20px;
+}
+.pr-10 {
+    padding-right: 10px;
+}
+.pb-10 {
+    padding-bottom: 10px;
+}
+.pb-20 {
+    padding-bottom: 20px;
+}
+.pl-5 {
+    padding-left: 5px;
+}
+.pl-10 {
+    padding-left: 10px;
+}
+.pointer {
+    cursor: pointer;
+}
+.fll {
+    float: left;
+}
+.flr {
+    float: right;
+}
+.w50 {
+    width: 50px;
+}
+.w100 {
+    width: 100px;
+}
+.w200 {
+    width: 200px;
+}
+.wp50 {
+    width: 50%;
+}
+
+.cake {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    line-height: 1;
+    border-radius: 10px;
+}
+.line {
+    height: 4px;
+    line-height: 1;
+}
+
+.minor {
+    color: #586069;
+}
+
+.icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-bottom: -2px;
+    background: transparent no-repeat center;
+    background-size: 14px;
+}
+.icon-lang {
+    background-image: url(../image/pacman.png);
+}
+.icon-stars {
+    background-image: url(../image/star-full.png);
+}
+.icon-issue {
+    background-image: url(../image/alert-circle.png);
+}
+.icon-fork {
+    background-image: url(../image/git-branch.png);
+}
+.icon-location {
+    background-image: url(../image/location.png);
+}
+.icon-company {
+    background-image: url(../image/briefcase.png);
+}
+.icon-email {
+    background-image: url(../image/mail.png);
+}
+.icon-website {
+    background-image: url(../image/link.png);
+}
+.icon-hire {
+    background-image: url(../image/user-check.png);
+}
+
+#app {
+    height: 100%;
+}
+
+.nav-bar {
+    width: 48px;
+    background: #eeeeee;
+}
+.nav-bar-link {
+    padding: 9px;
+    cursor: pointer;
+}
+.nav-bar-link.active {
+    background: #fff;
+}
+.nav-bar-link img {
+    width: 30px;
+}
+
+.list-user {
+    width: 180px;
+}
+.bg-minor {
+    background: #fafafa;
+}
+.bg-minor.active {
+    background: #fff;
+}
+
+.list-filter {
+    width: 240px;
+}
+
+.list-user-avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.detail-subject-avatar {
+    width: 200px;
+    height: 200px;
+}
+
+.avatar {
+    display: inline-block;
+    width: 50px;
+    width: 50px;
+    line-height: 1;
+    vertical-align: middle;
+    border-radius: 3px;
+}
+
+.numerical {
+    display: inline-block;
+    padding: 2px 5px;
+    font-size: 12px;
+    line-height: 1;
+    color: #586069;
+    background-color: rgba(27,31,35,0.08);
+    border-radius: 20px;
+}
+
+.status-tag {
+    margin-left: 20px;
+}
+.status-tag span {
+    display: inline-block;
+    min-width: 30px;
+    padding: 2px 8px;
+    text-align: center;
+}
+.status-tag span:first-child {
+    color: #fff;
+    background: #909090;
+    border-radius: 3px 0 0 3px;
+}
+.status-tag span:last-child {
+    background: #eeeeee;
+    border-radius: 0 3px 3px 0;
+}
+
+.corner-tip {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
