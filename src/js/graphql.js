@@ -114,16 +114,14 @@ function fetchUserData (login) {
 };
 
 // 抓取用户repos
-function fetchUserRepos (login) {
-  var query = `query ($login: String!) {
+function fetchUserRepos (login, cursor) {
+  var after = cursor ? 'after: ' + cursor + ',' : '';
+  var query = `query ($login: String!, $count: Int!) {
     user(login: $login) {
-      repositories(first:6, affiliations:OWNER, orderBy:{field:PUSHED_AT, direction:DESC}) {
+      repositories(first: $count, ${after} affiliations:OWNER, orderBy:{field:PUSHED_AT, direction:DESC}) {
         nodes {
           description
           forks {
-            totalCount
-          }
-          issues {
             totalCount
           }
           isFork
@@ -148,7 +146,8 @@ function fetchUserRepos (login) {
   }`;
 
   var variables = {
-    login: login
+    login: login,
+    count: 6
   };
 
   return client.request(query, variables);

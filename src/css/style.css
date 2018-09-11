@@ -50,6 +50,9 @@ p {
 .mb-10 {
     margin-bottom: 10px;
 }
+.mb-20 {
+    margin-bottom: 20px;
+}
 .ml-10 {
     margin-left: 10px;
 }
@@ -120,9 +123,7 @@ p {
     background: transparent no-repeat center;
     background-size: 14px;
 }
-.icon-lang {
-    background-image: url(../image/pacman.png);
-}
+
 .icon-stars {
     background-image: url(../image/star-full.png);
 }
@@ -169,6 +170,16 @@ p {
 .nav-bar-link img {
     width: 30px;
 }
+.link-active {
+    padding: 3px 5px;
+    border-bottom: 1px dashed #fff;
+}
+.link-active:hover {
+    border-bottom-color: #dedede; 
+}
+.link-active:active {
+    background: rgba(98,98,98,0.08);
+}
 
 .list-user {
     width: 180px;
@@ -205,12 +216,21 @@ p {
 
 .numerical {
     display: inline-block;
-    padding: 2px 5px;
+    padding: 3px 5px;
     font-size: 12px;
     line-height: 1;
     color: #586069;
     background-color: rgba(27,31,35,0.08);
     border-radius: 20px;
+}
+
+.repo-tag {
+    display: inline-block;
+    margin: 5px 5px 2px 0;
+    padding: 1px 5px;
+    border: 1px solid #d1d5da;
+    border-radius: 3px;
+    font-size: 9px;
 }
 
 .status-tag {

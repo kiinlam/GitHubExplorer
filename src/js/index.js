@@ -10,9 +10,10 @@ new Vue({
     users: [], // 用户组
     repos: {},
     nodeType: '', // 当前类别
-    subjectType: '',
     currentNodeData: null, // 当前数据节点
-    filterListData: {list: [], pageInfo: null} // 过滤列表
+    filterListData: {nodes: [], pageInfo: null}, // 过滤列表
+    subjectType: '',
+    currentSubjectData: null, // 当前详情数据
   },
   created: function () {
     if (this.token) {
@@ -49,35 +50,62 @@ new Vue({
 
     // 显示仓库列表
     showRepos: function () {
-      var vm = this;
       var login = this.currentNodeData.login;
       var repos = this.repos;
-      var filterListData = this.filterListData;
-      if (repos[login]) {
-        console.log(repos[login]);
-        vm.$set(filterListData, 'pageInfo', repos[login].pageInfo);
-        vm.$set(filterListData, 'list', repos[login].nodes);
-      } else {
-        repos[login] = {nodes: []};
 
-        gql.fetchUserRepos(login)
+      if (repos[login]) {
+        this.filterListData = repos[login];
+      } else {
+        repos[login] = {nodes: [], pending: 0, pageInfo: null};
+        this.filterListData = repos[login];
+        this.fetchUserRepos(login);
+      }
+    },
+
+    // 加载更多
+    loadmore: function () {
+      var login = this.currentNodeData.login;
+      var cursor = this.filterListData.pageInfo.endCursor;
+      this.fetchUserRepos(login, cursor);
+    },
+
+    // 抓取用户repos列表
+    fetchUserRepos: function (login, cursor) {
+      var vm = this;
+      var repos = this.repos[login];
+      var filterListData = this.filterListData;
+
+      if (!login) {
+        return;
+      }
+
+      // 设置为pending状态
+      repos.pending = 1;
+
+      gql.fetchUserRepos(login, cursor)
         .then(function(data) {
           console.log(data);
           var obj = data.user.repositories;
-          repos[login].pageInfo = obj.pageInfo;
-          repos[login].nodes = repos[login].nodes.concat(obj.nodes);
-          console.log('fetch end:');
-          console.log(repos[login]);
-          vm.$set(filterListData, 'pageInfo', repos[login].pageInfo);
-          vm.$set(filterListData, 'list', repos[login].nodes);
+          repos.pageInfo = obj.pageInfo;
+          repos.nodes = repos.nodes.concat(obj.nodes);
+          repos.pending = 0;
         })
         .catch(function(err){
           var errors = err.response.errors;
           errors.forEach(function(i){
             console.error(i.message);
           });
+          repos.pending = 0;
         });
-      }
-    }
+
+        
+    },
+
+    // repo列表点击事件
+    repolistClick: function (node) {
+      var vm = this;
+      this.currentSubjectData = node;
+      this.subjectType = 'repo';
+    },
   }
 });

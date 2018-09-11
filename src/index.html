@@ -61,10 +61,10 @@
                 </div>
               </div>
               <div>
-                <div class="mt-10 minor pointer" font="f12" @click="showRepos">Repositories <span class="numerical flr">{{ currentNodeData.repositories.totalCount }}</span></div>
-                <div class="mt-10 minor pointer" font="f12">Stars <span class="numerical flr">{{ currentNodeData.starredRepositories.totalCount }}</span></div>
-                <div class="mt-10 minor pointer" font="f12">Followers <span class="numerical flr">{{ currentNodeData.followers.totalCount }}</span></div>
-                <div class="mt-10 minor pointer" font="f12">Following <span class="numerical flr">{{ currentNodeData.following.totalCount }}</span></div>
+                <div class="mt-5 minor pointer link-active" font="f12" @click="showRepos">Repositories <span class="numerical flr">{{ currentNodeData.repositories.totalCount }}</span></div>
+                <div class="mt-5 minor pointer link-active" font="f12">Stars <span class="numerical flr">{{ currentNodeData.starredRepositories.totalCount }}</span></div>
+                <div class="mt-5 minor pointer link-active" font="f12">Followers <span class="numerical flr">{{ currentNodeData.followers.totalCount }}</span></div>
+                <div class="mt-5 minor pointer link-active" font="f12">Following <span class="numerical flr">{{ currentNodeData.following.totalCount }}</span></div>
               </div>
             </div>
 
@@ -117,57 +117,24 @@
   
           </section>
 
-          <template v-if="filterListData.list.length">
+          <template v-if="filterListData.nodes.length">
             <!-- 过滤列表 -->
-            <section class="list-filter" border="right">
-  
-              <div class="bg-minor active" padding="10" border="bottom">
-                <div class="info-user">
-                  <div class="pointer" color="link" font="w700">大名鼎鼎</div>
-                  <small color="minor">小名</small>
-                </div>
-                <div class="mt-10" layout="flex" color="minor">
-                  <!-- 语言 -->
-                  <div class="mr-20" layout="flex">
-                    <span class="icon icon-lang"></span>
-                    <small class="ml-3">Javascript</small>
-                  </div>
-                  <!-- stars -->
-                  <div class="mr-20" layout="flex">
-                    <span class="icon icon-stars"></span>
-                    <small class="ml-3">88</small>
-                  </div>
-                  <!-- fork -->
-                  <div class="mr-20" layout="flex">
-                    <span class="icon icon-fork"></span>
-                    <small class="ml-3">99</small>
-                  </div>
+            <section class="list-filter" border="right" style="overflow-x: hidden; overflow-y: auto;">
+
+              <div class="bg-minor pointer" padding="10" border="bottom" font="f12" v-for="node in filterListData.nodes" :class="{active: node === currentSubjectData}" @click="repolistClick(node)">
+                <div class="mt-5 mb-5" font="f14 w700">{{ node.name }}</div>
+                <div color="minor">{{ node.description }}</div>
+                <div class="repo-tag" color="minor" v-if="node.isFork"><span>Forked</span></div>
+                <div class="mt-10" color="minor">
+                    <template v-if="node.languages.nodes.length">
+                      <span class="cake mr-3" :style="{ background: node.languages.nodes[0].color }"></span><span class="ml-5 mr-20">{{ node.languages.nodes[0].name }}</span>
+                    </template>
+                    <span class="icon icon-stars"></span><span class="ml-5 mr-20">{{ node.stargazers.totalCount }}</span>
+                    <span class="icon icon-fork"></span><span class="ml-5 mr-20">{{ node.forks.totalCount }}</span>
                 </div>
               </div>
-  
-              <div class="bg-minor" padding="10" border="bottom">
-                <div class="info-user">
-                  <div class="pointer" color="link" font="w700">大名鼎鼎</div>
-                  <small color="minor">小名</small>
-                </div>
-                <div class="mt-10" layout="flex" color="minor">
-                  <!-- 语言 -->
-                  <div class="mr-20" layout="flex">
-                    <span class="icon icon-lang"></span>
-                    <small class="ml-3">Javascript</small>
-                  </div>
-                  <!-- stars -->
-                  <div class="mr-20" layout="flex">
-                    <span class="icon icon-stars"></span>
-                    <small class="ml-3">88</small>
-                  </div>
-                  <!-- fork -->
-                  <div class="mr-20" layout="flex">
-                    <span class="icon icon-fork"></span>
-                    <small class="ml-3">99</small>
-                  </div>
-                </div>
-              </div>
+              <div class="pointer" padding="10" text="center" color="minor" v-if="filterListData.pending">正在加载...</div>
+              <div class="pointer" padding="10" text="center" color="link" v-else-if="filterListData.pageInfo.hasNextPage" @click="loadmore">加载更多</div>
   
             </section>
           </template>
