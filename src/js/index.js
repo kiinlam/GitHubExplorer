@@ -55,6 +55,9 @@ new Vue({
 
       if (repos[login]) {
         this.filterListData = repos[login];
+        if (this.currentSubjectData) {
+          this.subjectType = 'repo';
+        }
       } else {
         repos[login] = {nodes: [], pending: 0, pageInfo: null};
         this.filterListData = repos[login];
@@ -75,7 +78,7 @@ new Vue({
       var repos = this.repos[login];
       var filterListData = this.filterListData;
 
-      if (!login) {
+      if (!login || repos.pending === 1) {
         return;
       }
 
@@ -84,7 +87,6 @@ new Vue({
 
       gql.fetchUserRepos(login, cursor)
         .then(function(data) {
-          console.log(data);
           var obj = data.user.repositories;
           repos.pageInfo = obj.pageInfo;
           repos.nodes = repos.nodes.concat(obj.nodes);
@@ -97,15 +99,51 @@ new Vue({
           });
           repos.pending = 0;
         });
+    },
 
-        
+    // 用户列表点击事件
+    userlistClick: function (node) {
+      this.filterListData = { nodes: [], pageInfo: null };
+      this.currentNodeData = node;
+      this.subjectType = 'user';
     },
 
     // repo列表点击事件
     repolistClick: function (node) {
-      var vm = this;
+      var login = this.currentNodeData.login;
       this.currentSubjectData = node;
       this.subjectType = 'repo';
+      if (!node.status) {
+        this.fetchRepo(login, node);
+      }
+    },
+
+    // 抓取repo数据
+    fetchRepo: function (login, node) {
+      var vm = this;
+
+      if (!login || !node || node.status === 1) {
+        return;
+      }
+
+      // 设置status状态
+      // 1：加载中
+      // 2：已更新
+      // 无状态表示需要加载数据
+      node.status = 1;
+
+      gql.fetchRepo(login, node.name)
+        .then(function (data) {
+          Object.assign(node, data.repository)
+          node.status = 2;
+        })
+        .catch(function (err) {
+          var errors = err.response.errors;
+          errors.forEach(function (i) {
+            console.error(i.message);
+          });
+          node.status = 0;
+        });
     },
   }
 });

@@ -51,7 +51,7 @@
           <section class="list-user" border="right" v-if="nodeType === 'user'">
 
             <div class="bg-minor active" padding="10" border="bottom">
-              <div class="pointer" layout="flex">
+              <div class="pointer" layout="flex" @click="userlistClick(currentNodeData)">
                 <div class="img-wrap list-user-avatar">
                   <img class="avatar" :src="currentNodeData.avatarUrl" :alt="currentNodeData.login">
                 </div>
@@ -222,7 +222,7 @@
                 </template>
 
                 <template v-if="currentNodeData.pinnedRepositories.nodes.length">
-                  <p class="bg-minor pt-20" padding="10" border="bottom">固定Repo<span class="flr" font="f12" color="minor">来自用户设置</span></p>
+                  <p class="bg-minor pt-20" padding="10" border="bottom">置顶Repo<span class="flr" font="f12" color="minor">来自用户设置</span></p>
                   <div class="mt-5" layout="flex" flex-flow="wrap" font="f12" border="bottom">
                     <div class="wp50" layout="flex" padding="5" box="border" v-for="node in currentNodeData.pinnedRepositories.nodes">
                       <div layout="flex" flex="1" flex-flow="column" padding="10" border="top-left bottom-right" box="border">
@@ -270,62 +270,63 @@
 
           <!-- 仓库详情 -->
           <template v-else-if="subjectType === 'repo'">
-            <section class="detail-subject" flex="1">
+            <section class="detail-subject" flex="1" v-if="currentSubjectData.status === 2">
               <div layout="flex" padding="10">
-                <div flex="1" font="f20 w700">repo name</div>
-                <div layout="flex" flex-align="y-center">
-                  <div class="status-tag"><span>Watch</span><span>88</span></div>
-                  <div class="status-tag"><span>Stars</span><span>88</span></div>
-                  <div class="status-tag"><span>Fork</span><span>88</span></div>
+                <div flex="1">
+                  <div font="f18 w700">{{ currentSubjectData.name }}</div>
+                  <small v-if="currentSubjectData.isFork">forked from {{ currentSubjectData.parent.nameWithOwner }}</small>
+                </div>
+                <div layout="flex" flex-align="y-start">
+                  <div class="status-tag"><span>Watch</span><span>{{ currentSubjectData.watchers.totalCount }}</span></div>
+                  <div class="status-tag ml-10"><span>Star</span><span>{{ currentSubjectData.stargazers.totalCount }}</span></div>
+                  <div class="status-tag ml-10"><span>Fork</span><span>{{ currentSubjectData.forkCount }}</span></div>
                 </div>
               </div>
   
               <div>
                 <!-- Code -->
-                <div class="bg-minor" padding="10">Code<span class="flr" color="minor" font="f12">MIT</span></div>
+                <div class="bg-minor" padding="10">Code<span class="flr" color="minor" font="f12">{{ currentSubjectData.licenseInfo.name }}</span></div>
   
-                <p padding="10" border="bottom">一句话简介</p>
-  
-                <!-- 语言 -->
                 <div padding="10" border="bottom">
-                  <div class="mb-10" layout="flex" text="center">
-                    <div flex="1"><span class="cake mr-3" style="background: #F14F21"></span>Javascript<span class="pl-5" color="minor">60%</span></div>
-                    <div flex="1"><span class="cake mr-3" style="background: #FFB800"></span>HTML<span class="pl-5" color="minor">20%</span></div>
-                    <div flex="1"><span class="cake mr-3" style="background: #00A4EE"></span>CSS<span class="pl-5" color="minor">10%</span></div>
-                    <div flex="1"><span class="cake mr-3" style="background: #7EB900"></span>Python<span class="pl-5" color="minor">5%</span></div>
-                    <div flex="1"><span class="cake mr-3" style="background: #C0C0C0"></span>Shell<span class="pl-5" color="minor">3%</span></div>
-                    <div flex="1"><span class="cake mr-3" style="background: #C0C0C0"></span>Other<span class="pl-5" color="minor">2%</span></div>
-                  </div>
-                  <div layout="flex">
-                    <div class="line" style="width:60%;background: #F14F21"></div>
-                    <div class="line" style="width:20%;background: #FFB800"></div>
-                    <div class="line" style="width:10%;background: #00A4EE"></div>
-                    <div class="line" style="width:5%;background: #7EB900"></div>
-                    <div class="line" style="width:3%;background: #C0C0C0"></div>
-                    <div class="line" style="width:2%;background: #C0C0C0"></div>
+                  <div>{{ currentSubjectData.description }} <span class="ml-10" color="link">{{ currentSubjectData.homepageUrl }}</span></div>
+                  <div class="mt-5" font="f12" color="minor" v-if="currentSubjectData.repositoryTopics.nodes.length">
+                    Topics:<span class="ml-10" v-for="node in currentSubjectData.repositoryTopics.nodes">{{ node.topic.name }}</span>
                   </div>
                 </div>
   
                 <!-- 统计 -->
                 <div layout="flex" padding="10" border="bottom" text="center">
                   <div flex="1" border="right">
-                    <div font="f16 w700">128</div>
+                    <div font="f16 w700">{{ currentSubjectData.commits.history.totalCount }}</div>
                     <div color="minor">commits</div>
                   </div>
                   <div flex="1" border="right">
-                    <div font="f16 w700">12</div>
+                    <div font="f16 w700">{{ currentSubjectData.branches.totalCount }}</div>
                     <div color="minor">branches</div>
                   </div>
                   <div flex="1" border="right">
-                    <div font="f16 w700">24</div>
+                    <div font="f16 w700">{{ currentSubjectData.tags.totalCount }}</div>
                     <div color="minor">releases</div>
                   </div>
                   <div flex="1">
-                    <div font="f16 w700">12</div>
-                    <div color="minor">contributors</div>
+                    <div font="f16 w700">{{ (currentSubjectData.diskUsage / 1024).toFixed(1) }}</div>
+                    <div color="minor">size(MB)</div>
                   </div>
                 </div>
-  
+
+                <!-- 语言 -->
+                <div padding="10" border="bottom" v-if="currentSubjectData.languages.nodes.length">
+                  <div layout="flex" text="center">
+                    <div flex="1" v-for="node in currentSubjectData.languages.nodes">
+                      <span class="cake mr-3" :style="{background: node.color}"></span>{{ node.name }}
+                    </div>
+                  </div>
+                </div>
+
+                <div padding="10" border="bottom" font="f12" color="minor">
+                  最后推送时间：{{ currentSubjectData.pushedAt }}
+                </div>
+
               </div>
   
               <div>
@@ -334,12 +335,12 @@
   
                 <!-- open issues -->
                 <div padding="10" border="bottom">
-                  <p>Open<span class="numerical ml-10" color="minor">3721</span></p>
+                  <p>Open<span class="numerical ml-10" color="minor">{{ currentSubjectData.issues.totalCount }}</span></p>
                 </div>
   
                 <!-- Closed issues -->
                 <div padding="10" border="bottom">
-                  <p>Closed<span class="numerical ml-10" color="minor">3721</span></p>
+                  <p>Closed<span class="numerical ml-10" color="minor">{{ currentSubjectData.issues.totalCount }}</span></p>
                 </div>
   
               </div>
@@ -348,18 +349,21 @@
                 <!-- Pull requests -->
                 <div class="bg-minor" padding="10">Pull requests</div>
   
-                <!-- Open -->
+                <!-- Open pullRequests -->
                 <div padding="10" border="bottom">
-                  <p>Open<span class="numerical ml-10" color="minor">3721</span></p>
+                  <p>Open<span class="numerical ml-10" color="minor">{{ currentSubjectData.pullRequests.totalCount }}</span></p>
                 </div>
   
-                <!-- Closed issues -->
+                <!-- Closed pullRequests -->
                 <div padding="10" border="bottom">
-                  <p>Closed<span class="numerical ml-10" color="minor">3721</span></p>
+                  <p>Closed<span class="numerical ml-10" color="minor">{{ currentSubjectData.pullRequests.totalCount }}</span></p>
                 </div>
   
               </div>
   
+            </section>
+            <section class="detail-subject" flex="1" v-else>
+              正在加载...
             </section>
           </template>
 

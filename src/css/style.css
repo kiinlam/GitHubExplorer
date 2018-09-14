@@ -106,10 +106,6 @@ p {
     line-height: 1;
     border-radius: 10px;
 }
-.line {
-    height: 4px;
-    line-height: 1;
-}
 
 .minor {
     color: #586069;
@@ -233,23 +229,24 @@ p {
     font-size: 9px;
 }
 
-.status-tag {
-    margin-left: 20px;
-}
 .status-tag span {
     display: inline-block;
-    min-width: 30px;
-    padding: 2px 8px;
+    min-width: 20px;
+    padding: 2px 4px;
     text-align: center;
+    font-size: 13px;
+    color: #626262;
+    border: 1px solid rgba(27,31,35,0.2);
+
 }
 .status-tag span:first-child {
-    color: #fff;
-    background: #909090;
+    background: #F1F5F7;
     border-radius: 3px 0 0 3px;
 }
 .status-tag span:last-child {
-    background: #eeeeee;
     border-radius: 0 3px 3px 0;
+    border-left: 0;
+
 }
 
 .corner-tip {

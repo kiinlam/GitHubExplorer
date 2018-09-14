@@ -4,7 +4,6 @@ var client = null;
 
 // 初始化GraphQLClient，设置header
 function init (token) {
-  console.log('init gql');
   client = new GraphQLClient('https://api.github.com/graphql', {
     headers: {
       Authorization: 'Bearer ' + token
@@ -136,6 +135,7 @@ function fetchUserRepos (login, cursor) {
             totalCount
           }
           url
+          viewerHasStarred
         }
         pageInfo {
           endCursor
@@ -153,4 +153,83 @@ function fetchUserRepos (login, cursor) {
   return client.request(query, variables);
 };
 
-export default { client, init, fetchUserData, fetchUserRepos };
+// 抓取用户repos
+function fetchRepo(owner, name) {
+  var query = `query ($owner: String!, $name: String!) {
+    repository(owner: $owner, name: $name) {
+      branches: refs(refPrefix:"refs/heads/") {
+        totalCount
+      }
+      commits: object(expression:"master") {
+        ... on Commit {
+          history {
+            totalCount
+          }
+        }
+      }
+      createdAt
+      defaultBranchRef {
+        name
+      }
+      description
+      diskUsage
+      forkCount
+      homepageUrl
+      isFork
+      issues {
+        totalCount
+      }
+      languages(first:20) {
+        nodes {
+          name
+          color
+        }
+      }
+      licenseInfo {
+        name
+      }
+      name
+      parent {
+        nameWithOwner
+      }
+      pullRequests {
+        totalCount
+      }
+      pushedAt
+      repositoryTopics(first:20) {
+        nodes {
+          topic {
+            name
+          }
+        }
+      }
+      stargazers {
+        totalCount
+      }
+      tags: refs(refPrefix:"refs/tags/") {
+        totalCount
+      }
+      updatedAt
+      url
+      viewerHasStarred
+      watchers {
+        totalCount
+      }
+    }
+  }`;
+
+  var variables = {
+    owner: owner,
+    name: name
+  };
+
+  return client.request(query, variables);
+};
+
+export default {
+  client,
+  init,
+  fetchUserData,
+  fetchUserRepos,
+  fetchRepo
+};
