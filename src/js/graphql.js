@@ -176,7 +176,10 @@ function fetchRepo(owner, name) {
       forkCount
       homepageUrl
       isFork
-      issues {
+      issuesOpen: issues(states: OPEN) {
+        totalCount
+      }
+      issuesClosed: issues(states: CLOSED) {
         totalCount
       }
       languages(first:20) {
@@ -192,7 +195,10 @@ function fetchRepo(owner, name) {
       parent {
         nameWithOwner
       }
-      pullRequests {
+      pullRequestsOpen: pullRequests(states: OPEN) {
+        totalCount
+      }
+      pullRequestsClosed: pullRequests(states: CLOSED) {
         totalCount
       }
       pushedAt

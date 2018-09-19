@@ -1,7 +1,11 @@
 import gql from './graphql.js';
+import repoComponent from '../components/repo-component.js';
 
 new Vue({
   el: '#app',
+  components: {
+    'repo-component' : repoComponent
+  },
   data: {
     token: localStorage.getItem('token') || '',
     pageLoading: 1,
@@ -130,11 +134,12 @@ new Vue({
       // 1：加载中
       // 2：已更新
       // 无状态表示需要加载数据
-      node.status = 1;
+      // node.status = 1;
+      vm.$set(node, 'status', 1);
 
       gql.fetchRepo(login, node.name)
         .then(function (data) {
-          Object.assign(node, data.repository)
+          Object.assign(node, data.repository);
           node.status = 2;
         })
         .catch(function (err) {

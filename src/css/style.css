@@ -56,6 +56,9 @@ p {
 .ml-10 {
     margin-left: 10px;
 }
+.pt-5 {
+    padding-top: 5px;
+}
 .pt-10 {
     padding-top: 10px;
 }
@@ -64,6 +67,9 @@ p {
 }
 .pr-10 {
     padding-right: 10px;
+}
+.pb-5 {
+    padding-bottom: 5px;
 }
 .pb-10 {
     padding-bottom: 10px;
@@ -94,6 +100,9 @@ p {
 }
 .w200 {
     width: 200px;
+}
+.w280 {
+    width: 280px;
 }
 .wp50 {
     width: 50%;
@@ -253,4 +262,8 @@ p {
     position: absolute;
     right: 0;
     bottom: 0;
+}
+
+.repo-card {
+    width: 280px;
 }

@@ -117,22 +117,22 @@
   
           </section>
 
+          <!-- 过滤列表 -->
           <template v-if="filterListData.nodes.length">
-            <!-- 过滤列表 -->
             <section class="list-filter" border="right" style="overflow-x: hidden; overflow-y: auto;">
 
-              <div class="bg-minor pointer" padding="10" border="bottom" font="f12" v-for="node in filterListData.nodes" :class="{active: node === currentSubjectData}" @click="repolistClick(node)">
-                <div class="mt-5 mb-5" font="f14 w700">{{ node.name }}</div>
-                <div color="minor">{{ node.description }}</div>
-                <div class="repo-tag" color="minor" v-if="node.isFork"><span>Forked</span></div>
-                <div class="mt-10" color="minor">
-                    <template v-if="node.languages.nodes.length">
-                      <span class="cake mr-3" :style="{ background: node.languages.nodes[0].color }"></span><span class="ml-5 mr-20">{{ node.languages.nodes[0].name }}</span>
-                    </template>
-                    <span class="icon icon-stars"></span><span class="ml-5 mr-20">{{ node.stargazers.totalCount }}</span>
-                    <span class="icon icon-fork"></span><span class="ml-5 mr-20">{{ node.forks.totalCount }}</span>
-                </div>
-              </div>
+              <template v-for="node in filterListData.nodes">
+                <repo-component
+                  class="bg-minor"
+                  padding="10"
+                  border="bottom"
+                  font="f12"
+                  :node="node"
+                  :class="{active: node === currentSubjectData}"
+                  @repo-click="repolistClick"
+                ></repo-component>
+              </template>
+
               <div class="pointer" padding="10" text="center" color="minor" v-if="filterListData.pending">正在加载...</div>
               <div class="pointer" padding="10" text="center" color="link" v-else-if="filterListData.pageInfo.hasNextPage" @click="loadmore">加载更多</div>
   
@@ -184,10 +184,10 @@
               </div>
 
               <!-- Github信息 -->
-              <div class="pb-10" flex="1" style="overflow: auto">
-                <p class="bg-minor pt-20" padding="10" border="bottom">统计</p>
+              <div class="pb-10 bg-minor" flex="1" style="overflow: auto">
+                <p padding="10" border="bottom" bg="white">统计</p>
 
-                <div layout="flex" border="bottom" text="center">
+                <div layout="flex" border="bottom" text="center" bg="white">
                   <div flex="1" padding="10" border="right">
                     <div font="f24 w700">{{ currentNodeData.repositoriesContributedTo.totalCount }}</div>
                     <div font="f12" color="minor">Repo贡献</div>
@@ -210,32 +210,36 @@
                 </div>
 
                 <template v-if="currentNodeData.organizations.nodes.length">
-                  <p class="bg-minor pt-20" padding="10" border="bottom">组织<span class="numerical">{{ currentNodeData.organizations.totalCount }}</span></p>
-                  <div v-for="node in currentNodeData.organizations.nodes">
-                    <div layout="flex" padding="10" border="bottom">
-                      <span class="w50"><img :src="node.avatarUrl" :alt="node.name"></span>
-                      <span class="w200">{{ node.name }}</span>
-                      <span class="w50">{{ node.members.totalCount }}人</span>
-                      <span>{{ node.url }}</span>
+                  <div class="mt-10" border="top">
+                    <p padding="10" border="bottom" bg="white">组织<span class="numerical">{{ currentNodeData.organizations.totalCount }}</span></p>
+                    <div v-for="node in currentNodeData.organizations.nodes" bg="white">
+                      <div layout="flex" padding="10" border="bottom">
+                        <span class="w50"><img :src="node.avatarUrl" :alt="node.name"></span>
+                        <span class="w200">{{ node.name }}</span>
+                        <span class="w50">{{ node.members.totalCount }}人</span>
+                        <span>{{ node.url }}</span>
+                      </div>
                     </div>
                   </div>
                 </template>
 
                 <template v-if="currentNodeData.pinnedRepositories.nodes.length">
-                  <p class="bg-minor pt-20" padding="10" border="bottom">置顶Repo<span class="flr" font="f12" color="minor">来自用户设置</span></p>
-                  <div class="mt-5" layout="flex" flex-flow="wrap" font="f12" border="bottom">
-                    <div class="wp50" layout="flex" padding="5" box="border" v-for="node in currentNodeData.pinnedRepositories.nodes">
-                      <div layout="flex" flex="1" flex-flow="column" padding="10" border="top-left bottom-right" box="border">
-                        <div class="mt-5 mb-5" color="link" font="w700">{{ node.name }}</div>
-                        <div color="minor" flex="1">{{ node.description }}</div>
-                        <div class="mt-10" color="minor">
-                            <template v-if="node.languages.nodes.length">
-                              <span class="cake mr-3" :style="{ background: node.languages.nodes[0].color }"></span><span class="ml-5 mr-20">{{ node.languages.nodes[0].name }}</span>
-                            </template>
-                            <span class="icon icon-stars"></span><span class="ml-5 mr-20">{{ node.stargazers.totalCount }}</span>
-                            <span class="icon icon-fork"></span><span class="ml-5 mr-20">{{ node.forks.totalCount }}</span>
-                            <span class="icon icon-issue"></span><span class="ml-5 mr-20">{{ node.issues.totalCount }}</span>
-                            <span class="mr-20" v-if="node.isFork">Forked</span>
+                  <div class="mt-10" border="top">
+                    <p padding="10" border="bottom" bg="white">置顶Repo<span class="flr" font="f12" color="minor">来自用户设置</span></p>
+                    <div class="pt-5 pb-5" layout="flex" flex-flow="wrap" flex-align="x-start" font="f12" border="bottom" bg="white">
+                      <div class="w280" layout="flex" padding="10" box="border" v-for="node in currentNodeData.pinnedRepositories.nodes">
+                        <div layout="flex" flex="1" flex-flow="column" padding="10" border="top-left bottom-right" box="border">
+                          <div class="mt-5 mb-5" color="link" font="w700">{{ node.name }}</div>
+                          <div color="minor" flex="1">{{ node.description }}</div>
+                          <div class="mt-10" color="minor">
+                              <template v-if="node.languages.nodes.length">
+                                <span class="cake mr-3" :style="{ background: node.languages.nodes[0].color }"></span><span class="ml-5 mr-20">{{ node.languages.nodes[0].name }}</span>
+                              </template>
+                              <span class="icon icon-stars"></span><span class="ml-5 mr-20">{{ node.stargazers.totalCount }}</span>
+                              <span class="icon icon-fork"></span><span class="ml-5 mr-20">{{ node.forks.totalCount }}</span>
+                              <span class="icon icon-issue"></span><span class="ml-5 mr-20">{{ node.issues.totalCount }}</span>
+                              <span class="mr-20" v-if="node.isFork">Forked</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -243,20 +247,37 @@
                 </template>
 
                 <template v-if="currentNodeData.repositories.nodes.length">
-                  <p class="bg-minor pt-20" padding="10" border="bottom">热门Repo<span class="flr" font="f12" color="minor">根据Stars排行</span></p>
-                  <div class="mt-5" layout="flex" flex-flow="wrap" font="f12" border="bottom">
-                    <div class="wp50" layout="flex" padding="5" box="border" v-for="node in currentNodeData.repositories.nodes">
-                      <div layout="flex" flex="1" flex-flow="column" padding="10" border="top-left bottom-right">
-                        <div class="mt-5 mb-5" color="link" font="w700">{{ node.name }}</div>
-                        <div color="minor" flex="1">{{ node.description }}</div>
-                        <div class="mt-10" color="minor">
-                            <template v-if="node.languages.nodes.length">
-                              <span class="cake mr-3" :style="{ background: node.languages.nodes[0].color }"></span><span class="ml-5 mr-20">{{ node.languages.nodes[0].name }}</span>
-                            </template>
-                            <span class="icon icon-stars"></span><span class="ml-5 mr-20">{{ node.stargazers.totalCount }}</span>
-                            <span class="icon icon-fork"></span><span class="ml-5 mr-20">{{ node.forks.totalCount }}</span>
-                            <span class="icon icon-issue"></span><span class="ml-5 mr-20">{{ node.issues.totalCount }}</span>
-                            <span class="mr-20" v-if="node.isFork">Forked</span>
+                  <div class="mt-10" border="top">
+                    <p padding="10" border="bottom" bg="white">热门Repo<span class="flr" font="f12" color="minor">根据Stars排行</span></p>
+                    <div class="pt-5 pb-5" layout="flex" flex-flow="wrap" flex-align="x-start" font="f12" border="bottom" bg="white">
+                      <div class="w280" layout="flex" padding="10" box="border" v-for="node in currentNodeData.repositories.nodes">
+                        <div layout="flex" flex="1" flex-flow="column" padding="10" border="top-left bottom-right">
+                          <div class="mt-5 mb-5" color="link" font="w700">{{ node.name }}</div>
+                          <div color="minor" flex="1">{{ node.description }}</div>
+                          <div>
+                            <div class="repo-tag" color="minor" v-if="node.isFork">
+                              <span>Forked</span>
+                            </div>
+                          </div>
+                          <div class="mt-10" layout="flex" flex-flow="wrap" color="minor">
+                              <template v-if="node.languages.nodes.length">
+                                <span>
+                                  <span class="cake mr-3" :style="{ background: node.languages.nodes[0].color }"></span><span class="ml-5 mr-20">{{ node.languages.nodes[0].name }}</span>
+                                </span>
+                              </template>
+                              <span>
+                                <span class="icon icon-stars"></span><span class="ml-5 mr-20">{{ node.stargazers.totalCount }}</span>
+                              </span>
+                              <span>
+                                <span class="icon icon-fork"></span><span class="ml-5 mr-20">{{ node.forks.totalCount }}</span>
+                              </span>
+                              <span>
+                                <span class="icon icon-issue"></span><span class="ml-5 mr-20">{{ node.issues.totalCount }}</span>
+                              </span>
+                              <span v-if="node.isFork">
+                                <span class="mr-20">Forked</span>
+                              </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -270,8 +291,8 @@
 
           <!-- 仓库详情 -->
           <template v-else-if="subjectType === 'repo'">
-            <section class="detail-subject" flex="1" v-if="currentSubjectData.status === 2">
-              <div layout="flex" padding="10">
+            <section class="detail-subject bg-minor" flex="1" v-if="currentSubjectData.status == 2">
+              <div layout="flex" padding="10" bg="white" border="bottom">
                 <div flex="1">
                   <div font="f18 w700">{{ currentSubjectData.name }}</div>
                   <small v-if="currentSubjectData.isFork">forked from {{ currentSubjectData.parent.nameWithOwner }}</small>
@@ -283,9 +304,9 @@
                 </div>
               </div>
   
-              <div>
+              <div class="mt-10" border="top" bg="white">
                 <!-- Code -->
-                <div class="bg-minor" padding="10">Code<span class="flr" color="minor" font="f12">{{ currentSubjectData.licenseInfo.name }}</span></div>
+                <div padding="10" border="bottom">Code<span class="flr" color="minor" font="f12">{{ currentSubjectData.licenseInfo.name }}</span></div>
   
                 <div padding="10" border="bottom">
                   <div>{{ currentSubjectData.description }} <span class="ml-10" color="link">{{ currentSubjectData.homepageUrl }}</span></div>
@@ -309,7 +330,7 @@
                     <div color="minor">releases</div>
                   </div>
                   <div flex="1">
-                    <div font="f16 w700">{{ (currentSubjectData.diskUsage / 1024).toFixed(1) }}</div>
+                    <div font="f16 w700">{{ (currentSubjectData.diskUsage / 1024).toFixed(2) }}</div>
                     <div color="minor">size(MB)</div>
                   </div>
                 </div>
@@ -329,34 +350,34 @@
 
               </div>
   
-              <div>
+              <div class="mt-10" border="top" bg="white">
                 <!-- Issues -->
-                <div class="bg-minor" padding="10">Issues</div>
+                <div padding="10" border="bottom">Issues</div>
   
                 <!-- open issues -->
                 <div padding="10" border="bottom">
-                  <p>Open<span class="numerical ml-10" color="minor">{{ currentSubjectData.issues.totalCount }}</span></p>
+                  <p>Open<span class="numerical ml-10" color="minor">{{ currentSubjectData.issuesOpen.totalCount }}</span></p>
                 </div>
   
                 <!-- Closed issues -->
                 <div padding="10" border="bottom">
-                  <p>Closed<span class="numerical ml-10" color="minor">{{ currentSubjectData.issues.totalCount }}</span></p>
+                  <p>Closed<span class="numerical ml-10" color="minor">{{ currentSubjectData.issuesClosed.totalCount }}</span></p>
                 </div>
   
               </div>
   
-              <div>
+              <div class="mt-10" border="top" bg="white">
                 <!-- Pull requests -->
-                <div class="bg-minor" padding="10">Pull requests</div>
+                <div padding="10" border="bottom">Pull requests</div>
   
                 <!-- Open pullRequests -->
                 <div padding="10" border="bottom">
-                  <p>Open<span class="numerical ml-10" color="minor">{{ currentSubjectData.pullRequests.totalCount }}</span></p>
+                  <p>Open<span class="numerical ml-10" color="minor">{{ currentSubjectData.pullRequestsOpen.totalCount }}</span></p>
                 </div>
   
                 <!-- Closed pullRequests -->
                 <div padding="10" border="bottom">
-                  <p>Closed<span class="numerical ml-10" color="minor">{{ currentSubjectData.pullRequests.totalCount }}</span></p>
+                  <p>Closed<span class="numerical ml-10" color="minor">{{ currentSubjectData.pullRequestsClosed.totalCount }}</span></p>
                 </div>
   
               </div>
