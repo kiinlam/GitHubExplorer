@@ -1,10 +1,25 @@
-import gql from './graphql.js';
-import repoComponent from '../components/repo-component.js';
+import gql from './graphql.js'; // graphql 请求管理
+import userDetailComponent from '../components/user-detail.js';  // 用户详情repo模块组件
+import listFilterComponent from '../components/list-filter.js'; // 列表展示组件
+import repoDetailComponent from '../components/repo-detail.js'; // repo详情组件
+
+// 过滤器-时间转换
+Vue.filter('formatTime', function (val) {
+  var d = new Date(val);
+  return d.toLocaleString();
+});
+
+// 过滤器-KB转MB，保留2位小数
+Vue.filter('toFixed', function (val, digits) {
+  return Number(val).toFixed(digits);
+});
 
 new Vue({
   el: '#app',
   components: {
-    'repo-component' : repoComponent
+    'user-detail-component': userDetailComponent,
+    'list-filter-component': listFilterComponent,
+    'repo-detail-component': repoDetailComponent
   },
   data: {
     token: localStorage.getItem('token') || '',
@@ -26,6 +41,10 @@ new Vue({
     }
   },
   methods: {
+    // 打印信息
+    log: function (s) {
+      console.log(s);
+    },
 
     // 登录
     login: function () {
@@ -59,14 +78,12 @@ new Vue({
 
       if (repos[login]) {
         this.filterListData = repos[login];
-        if (this.currentSubjectData) {
-          this.subjectType = 'repo';
-        }
       } else {
         repos[login] = {nodes: [], pending: 0, pageInfo: null};
         this.filterListData = repos[login];
         this.fetchUserRepos(login);
       }
+      this.subjectType = 'repo';
     },
 
     // 加载更多
@@ -78,9 +95,7 @@ new Vue({
 
     // 抓取用户repos列表
     fetchUserRepos: function (login, cursor) {
-      var vm = this;
       var repos = this.repos[login];
-      var filterListData = this.filterListData;
 
       if (!login || repos.pending === 1) {
         return;

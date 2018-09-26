@@ -38,6 +38,9 @@ p {
 .mr-3 {
     margin-right: 3px;
 }
+.mr-4 {
+    margin-right: 4px;
+}
 .mr-10 {
     margin-right: 10px;
 }
@@ -108,7 +111,7 @@ p {
     width: 50%;
 }
 
-.cake {
+.icon-lang {
     display: inline-block;
     width: 10px;
     height: 10px;
@@ -198,6 +201,7 @@ p {
 
 .list-filter {
     width: 240px;
+    height: 100%;
 }
 
 .list-user-avatar {
@@ -265,5 +269,5 @@ p {
 }
 
 .repo-card {
-    width: 280px;
+    width: 300px;
 }

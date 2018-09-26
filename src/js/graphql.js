@@ -53,9 +53,6 @@ function fetchUserData (login) {
           forks {
             totalCount
           }
-          issues {
-            totalCount
-          }
           isFork
           languages(first:1) {
             nodes {
@@ -78,9 +75,6 @@ function fetchUserData (login) {
         nodes {
           description
           forks {
-            totalCount
-          }
-          issues {
             totalCount
           }
           isFork
@@ -147,13 +141,13 @@ function fetchUserRepos (login, cursor) {
 
   var variables = {
     login: login,
-    count: 6
+    count: 10
   };
 
   return client.request(query, variables);
 };
 
-// 抓取用户repos
+// 抓取用户repo
 function fetchRepo(owner, name) {
   var query = `query ($owner: String!, $name: String!) {
     repository(owner: $owner, name: $name) {
