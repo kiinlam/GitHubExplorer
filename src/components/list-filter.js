@@ -16,50 +16,56 @@ var initList = function (text) {
 };
 
 var dataList = function () { 
-  return {
-    components: {
-      'repo-component': repoComponent
-    },
-    props: {
-      list: {
-        type: Object,
-        required: true
+  var component;
+  if (dataList.component) {
+    return dataList.component;
+  } else {
+    component = {
+      components: {
+        'repo-component': repoComponent
       },
-      nodeData: {
-        type: null,
-        required: true
-      }
-    },
-    methods: {
-      repoClick: function (node) {
-        this.$emit('repo-click', node);
-      }
-    },
-    template: `
-      <section class="list-filter" border="right" style="overflow-x: hidden; overflow-y: auto;">
-        <template v-for="node in list.nodes">
+      props: {
+        list: {
+          type: Object,
+          required: true
+        },
+        nodeData: {
+          type: null,
+          required: true
+        }
+      },
+      methods: {
+        repoClick: function (node) {
+          this.$emit('repo-click', node);
+        }
+      },
+      template: `
+        <section class="list-filter" border="right" style="overflow-x: hidden; overflow-y: auto;">
           <repo-component
             class="bg-minor"
             padding="10"
             border="bottom"
+            v-for="node in list.nodes"
             :node-data="node"
             :class="{active: node === nodeData}"
             @repo-click="repoClick"
           ></repo-component>
-        </template>
-        <div class="pointer" padding="10" text="center" color="minor" v-if="list.pending && list.pageInfo">加载中...</div>
-        <div class="pointer" padding="10" text="center" color="link" v-else-if="list.pageInfo.hasNextPage" @click="$emit('loadmore')">加载更多</div>
-      </section>
-    `
-  };
+          <div class="pointer" padding="10" text="center" color="minor" v-if="list.pending && list.pageInfo">加载中...</div>
+          <div class="pointer" padding="10" text="center" color="link" v-else-if="list.pageInfo.hasNextPage" @click="$emit('loadmore')">加载更多</div>
+        </section>
+      `
+    };
+  }
+  dataList.component = component;
+  return component;
 };
 
 var component = {
   functional: true,
   render: function (createElement, context) {
-    var props = context.props,
-      list = props.list,
-      elem = null;
+    var props = context.props;
+    var list = props.list;
+    var elem = null;
     
     if (list.pending && !list.pageInfo) {
       elem = initList('加载中...');
@@ -72,7 +78,7 @@ var component = {
     return createElement(
       elem,
       context.data,
-      context.childrene
+      context.children
     );
   }
 };

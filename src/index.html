@@ -43,12 +43,12 @@
         <section class="main" layout="flex" flex="1">
 
           <nav class="nav-bar" border="right" text="center">
-            <div class="nav-bar-link nav-user active" :class="{ active: nodeType === 'user' }"><img src="image/github.png" alt="user"></div>
-            <div class="nav-bar-link nav-users" :class="{ active: nodeType === 'users' }"><img src="image/users.png" alt="users"></div>
+            <div class="nav-bar-link nav-user active" :class="{ active: navType === 'user' }"><img src="image/github.png" alt="user"></div>
+            <div class="nav-bar-link nav-users" :class="{ active: navType === 'users' }"><img src="image/users.png" alt="users"></div>
           </nav>
           
           <!-- 登录用户 -->
-          <section class="list-user" border="right" v-if="nodeType === 'user'">
+          <section class="list-user" border="right" v-if="navType === 'user'">
 
             <div class="bg-minor active" padding="10" border="bottom">
               <div class="pointer" layout="flex" @click="userlistClick(currentNodeData)">
@@ -61,8 +61,8 @@
                 </div>
               </div>
               <div>
-                <div class="mt-5 minor pointer link-active" font="f12" @click="showRepos">Repositories <span class="numerical flr">{{ currentNodeData.repositories.totalCount }}</span></div>
-                <div class="mt-5 minor pointer link-active" font="f12">Stars <span class="numerical flr">{{ currentNodeData.starredRepositories.totalCount }}</span></div>
+                <div class="mt-5 minor pointer link-active" font="f12" @click="showList('repo')">Repositories <span class="numerical flr">{{ currentNodeData.repositories.totalCount }}</span></div>
+                <div class="mt-5 minor pointer link-active" font="f12" @click="showList('star')">Stars <span class="numerical flr">{{ currentNodeData.starredRepositories.totalCount }}</span></div>
                 <div class="mt-5 minor pointer link-active" font="f12">Followers <span class="numerical flr">{{ currentNodeData.followers.totalCount }}</span></div>
                 <div class="mt-5 minor pointer link-active" font="f12">Following <span class="numerical flr">{{ currentNodeData.following.totalCount }}</span></div>
               </div>
@@ -71,7 +71,7 @@
           </section>
 
           <!-- 用户列表 -->
-          <section class="list-user" border="right" v-else-if="nodeType === 'users'">
+          <section class="list-user" border="right" v-else-if="navType === 'users'">
 
             <div class="bg-minor active" padding="10" border="bottom">
               <div layout="flex">
@@ -126,18 +126,16 @@
           ></list-filter-component>
 
           <!-- 用户详情 -->
-          <template v-if="subjectType === 'user'">
-            <user-detail-component
-              :node-data="currentNodeData" 
-            ></user-detail-component>
-          </template>
+          <user-detail-component
+            v-if="subjectType === 'user'"
+            :node-data="currentNodeData" 
+          ></user-detail-component>
 
           <!-- 仓库详情 -->
-          <template v-else-if="subjectType === 'repo'">
-            <repo-detail-component
-              :node-data="currentSubjectData" 
-            ></repo-detail-component>
-          </template>
+          <repo-detail-component
+            v-else-if="subjectType === 'repo' || subjectType === 'star'"
+            :node-data="currentSubjectData" 
+          ></repo-detail-component>
 
           <!-- 组织详情 -->
           <template v-else-if="subjectType === 'org'">
@@ -145,13 +143,11 @@
           </template>
 
           <!-- 默认 -->
-          <template v-else>
-            <section class="detail-subject" flex="1">
-              <div layout="flex" padding="10" flex-align="center" box="border" style="height: 100%;">
-                <div>欢迎使用 GitHub Explorer</div>
-              </div>
-            </section>
-          </template>
+          <section class="detail-subject" flex="1" v-else>
+            <div layout="flex" padding="10" flex-align="center" box="border" style="height: 100%;">
+              <div>欢迎使用 GitHub Explorer</div>
+            </div>
+          </section>
 
         </section>
       </template>

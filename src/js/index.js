@@ -27,8 +27,9 @@ new Vue({
     isLogining: 0,
     loginUser: null, // 登录用户
     users: [], // 用户组
-    repos: {},
-    nodeType: '', // 当前类别
+    repos: {}, // 以用户名为key的repo集合
+    stars: {}, // 以用户名为key的star集合
+    navType: '', // 当前类别
     currentNodeData: null, // 当前数据节点
     filterListData: {nodes: [], pageInfo: null}, // 过滤列表
     subjectType: '',
@@ -53,13 +54,13 @@ new Vue({
       this.isLogining = 1;
       // 尝试请求用户数据
       gql.fetchUserData()
-        .then(function(data) {
+        .then(function(res) {
           // 请求成功，保存token
           localStorage.setItem('token', vm.token);
           vm.pageLoading = 0;
-          vm.loginUser = data.viewer;
-          vm.currentNodeData = data.viewer;
-          vm.nodeType = 'user';
+          vm.loginUser = res.viewer;
+          vm.currentNodeData = res.viewer;
+          vm.navType = 'user';
           vm.subjectType = 'user';
         })
         .catch(function(err){
@@ -71,53 +72,21 @@ new Vue({
         });
     },
 
-    // 显示仓库列表
-    showRepos: function () {
+    // 显示star列表
+    // @param {string} type - repo or star
+    showList: function (type) {
       var login = this.currentNodeData.login;
-      var repos = this.repos;
+      var key = type + 's';
+      var data = this[key];
 
-      if (repos[login]) {
-        this.filterListData = repos[login];
+      if (data[login]) {
+        this.filterListData = data[login];
       } else {
-        repos[login] = {nodes: [], pending: 0, pageInfo: null};
-        this.filterListData = repos[login];
-        this.fetchUserRepos(login);
+        data[login] = { nodes: [], pending: 0, pageInfo: null };
+        this.filterListData = data[login];
+        this.fetchRepos(key, login);
       }
-      this.subjectType = 'repo';
-    },
-
-    // 加载更多
-    loadmore: function () {
-      var login = this.currentNodeData.login;
-      var cursor = this.filterListData.pageInfo.endCursor;
-      this.fetchUserRepos(login, cursor);
-    },
-
-    // 抓取用户repos列表
-    fetchUserRepos: function (login, cursor) {
-      var repos = this.repos[login];
-
-      if (!login || repos.pending === 1) {
-        return;
-      }
-
-      // 设置为pending状态
-      repos.pending = 1;
-
-      gql.fetchUserRepos(login, cursor)
-        .then(function(data) {
-          var obj = data.user.repositories;
-          repos.pageInfo = obj.pageInfo;
-          repos.nodes = repos.nodes.concat(obj.nodes);
-          repos.pending = 0;
-        })
-        .catch(function(err){
-          var errors = err.response.errors;
-          errors.forEach(function(i){
-            console.error(i.message);
-          });
-          repos.pending = 0;
-        });
+      this.subjectType = type;
     },
 
     // 用户列表点击事件
@@ -131,17 +100,45 @@ new Vue({
     repolistClick: function (node) {
       var login = this.currentNodeData.login;
       this.currentSubjectData = node;
-      this.subjectType = 'repo';
+      // this.subjectType = 'repo';
       if (!node.status) {
-        this.fetchRepo(login, node);
+        this.fetchRepo(node);
       }
     },
 
-    // 抓取repo数据
-    fetchRepo: function (login, node) {
-      var vm = this;
+    // 抓取用户repos列表
+    fetchRepos: function (key, login, cursor) {
+      var data = this[key][login];
 
-      if (!login || !node || node.status === 1) {
+      if (!login || data.pending === 1) {
+        return;
+      }
+
+      // 设置为pending状态
+      data.pending = 1;
+
+      gql.fetchRepos(key, login, cursor)
+        .then(function(res) {
+          var obj = res.user.dataList;
+          data.pageInfo = obj.pageInfo;
+          data.nodes = data.nodes.concat(obj.nodes);
+          data.pending = 0;
+        })
+        .catch(function(err){
+          var errors = err.response.errors;
+          errors.forEach(function(i){
+            console.error(i.message);
+          });
+          data.pending = 0;
+        });
+    },
+
+    // 抓取repo数据
+    fetchRepo: function (node) {
+      var vm = this;
+      var login = node.owner && node.owner.login || '';
+
+      if (!login || node.status === 1) {
         return;
       }
 
@@ -153,8 +150,8 @@ new Vue({
       vm.$set(node, 'status', 1);
 
       gql.fetchRepo(login, node.name)
-        .then(function (data) {
-          Object.assign(node, data.repository);
+        .then(function (res) {
+          Object.assign(node, res.repository);
           node.status = 2;
         })
         .catch(function (err) {
@@ -164,6 +161,15 @@ new Vue({
           });
           node.status = 0;
         });
+    },
+
+    // 加载更多
+    loadmore: function () {
+      var type = this.subjectType;
+      var key = type + 's';
+      var login = this.currentNodeData.login;
+      var cursor = this.filterListData.pageInfo.endCursor;
+      this.fetchRepos(key, login, cursor);
     },
   }
 });

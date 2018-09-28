@@ -107,11 +107,14 @@ function fetchUserData (login) {
 };
 
 // 抓取用户repos
-function fetchUserRepos (login, cursor) {
+function fetchRepos (key, login, cursor) {
+  var dataList = { repos: 'repositories', stars: 'starredRepositories' }[key];
   var after = cursor ? 'after: ' + cursor + ',' : '';
+  var own = { repos: 'affiliations:OWNER,', stars: '' }[key];
+  var orderField = { repos: 'PUSHED_AT', stars: 'STARRED_AT' }[key];
   var query = `query ($login: String!, $count: Int!) {
     user(login: $login) {
-      repositories(first: $count, ${after} affiliations:OWNER, orderBy:{field:PUSHED_AT, direction:DESC}) {
+      dataList: ${dataList}(first: $count, ${after} ${own} orderBy:{field:${orderField}, direction:DESC}) {
         nodes {
           description
           forks {
@@ -125,6 +128,10 @@ function fetchUserRepos (login, cursor) {
             }
           }
           name
+          nameWithOwner
+          owner {
+            login
+          }
           stargazers {
             totalCount
           }
@@ -230,6 +237,6 @@ export default {
   client,
   init,
   fetchUserData,
-  fetchUserRepos,
+  fetchRepos,
   fetchRepo
 };

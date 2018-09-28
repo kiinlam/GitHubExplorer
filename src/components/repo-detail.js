@@ -42,7 +42,7 @@ var dataList = function () {
 
         <div class="mt-10" border="top" bg="white">
           <!-- Code -->
-          <div padding="10" border="bottom">Code<span class="flr" color="minor" font="f12">{{ nodeData.licenseInfo.name }}</span></div>
+          <div padding="10" border="bottom">Code<span class="flr" color="minor" font="f12" v-if="nodeData.licenseInfo">{{ nodeData.licenseInfo.name }}</span></div>
 
           <div padding="10" border="bottom">
             <div>{{ nodeData.description }} <span class="ml-10" color="link">{{ nodeData.homepageUrl }}</span></div>
@@ -126,9 +126,9 @@ var dataList = function () {
 var component = {
   functional: true,
   render: function (createElement, context) {
-    var props = context.props,
-      nodeData = props.nodeData,
-      elem = null;
+    var props = context.props;
+    var nodeData = props.nodeData;
+    var elem = null;
     
     if (!nodeData) {
       elem = initList('请选择Repository');
@@ -141,7 +141,7 @@ var component = {
     return createElement(
       elem,
       context.data,
-      context.childrene
+      context.children
     );
   }
 };
