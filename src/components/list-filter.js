@@ -44,7 +44,7 @@ var dataList = function () {
           <repo-component
             class="bg-minor"
             padding="10"
-            border="bottom"
+            border="bottom-right"
             v-for="node in list.nodes"
             :node-data="node"
             :class="{active: node === nodeData}"
