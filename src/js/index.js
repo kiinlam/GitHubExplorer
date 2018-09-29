@@ -91,6 +91,10 @@ new Vue({
       var key = type + 's';
       var data = this[key];
 
+      if (type === this.subjectType) {
+        return;
+      }
+
       if (data[login]) {
         this.filterListData = data[login];
       } else {
@@ -98,6 +102,7 @@ new Vue({
         this.filterListData = data[login];
         this.fetchRepos(key, login);
       }
+      this.currentSubjectData = null;
       this.subjectType = type;
     },
 
@@ -108,6 +113,10 @@ new Vue({
       var key = type + 's';
       var data = this[key];
 
+      if (type === this.subjectType) {
+        return;
+      }
+
       if (data[login]) {
         this.filterListData = data[login];
       } else {
@@ -115,6 +124,7 @@ new Vue({
         this.filterListData = data[login];
         this.fetchFollowers(key, login);
       }
+      this.currentSubjectData = null;
       this.subjectType = type;
     },
 

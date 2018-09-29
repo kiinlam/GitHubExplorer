@@ -84,8 +84,8 @@ var component = {
             <p padding="10" border="bottom" bg="white">组织<span class="numerical ml-10">{{ nodeData.organizations.totalCount }}</span></p>
             <div layout="flex" flex-flow="wrap" bg="white">
               <div padding="10" align="center" v-for="node in nodeData.organizations.nodes">
-                <div class="w50"><img width="20" height="20" :src="node.avatarUrl" alt="{{ node.members.totalCount }}人"></div>
-                <div font="f12" title="{{ node.url }}">{{ node.name }}</div>
+                <div class="w50"><img width="20" height="20" :src="node.avatarUrl" alt="node.members.totalCount + '人'"></div>
+                <div font="f12" title="node.url">{{ node.name }}</div>
               </div>
             </div>
           </div>
