@@ -55,6 +55,13 @@ new Vue({
     // 登录
     login: function () {
       var vm = this;
+
+      if (!this.token) {
+        return;
+      }
+
+      gql.init(this.token);
+
       // 显示loading状态
       this.isLogining = 1;
       // 尝试请求用户数据
@@ -68,13 +75,26 @@ new Vue({
           vm.navType = 'user';
           vm.subjectType = 'user';
         })
-        .catch(function(err){
+        .catch(function (err) {
+          var res = err.response;
           var errors = err.response.errors;
-          errors.forEach(function(i){
-            console.error(i.message);
-          });
+          if (res.message) {
+            console.log(res.message);
+          } else {
+            errors.forEach(function(i){
+              console.error(i.message);
+            });
+          }
           vm.isLogining = 0;
+          alert('请求错误，请打开控制台查看');
         });
+    },
+
+    logout: function () {
+      this.pageLoading = 1;
+      this.isLogining = 0;
+      this.token = '';
+      localStorage.removeItem('token');
     },
 
     // 用户列表点击事件
@@ -168,6 +188,7 @@ new Vue({
             console.error(i.message);
           });
           data.pending = 0;
+          alert('请求错误，请打开控制台查看');          
         });
     },
 
@@ -198,6 +219,7 @@ new Vue({
             console.error(i.message);
           });
           node.status = 0;
+          alert('请求错误，请打开控制台查看');          
         });
     },
 
@@ -238,6 +260,7 @@ new Vue({
             console.error(i.message);
           });
           data.pending = 0;
+          alert('请求错误，请打开控制台查看');          
         });
     },
 
@@ -268,6 +291,7 @@ new Vue({
             console.error(i.message);
           });
           node.status = 0;
+          alert('请求错误，请打开控制台查看');          
         });
     },
   }

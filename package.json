@@ -14,7 +14,9 @@
     "url": "git+https://github.com/kiinlam/GitHubExplorer.git"
   },
   "keywords": [
-    "github"
+    "github",
+    "vue",
+    "graphQL"
   ],
   "author": "kiinlam",
   "license": "MIT",

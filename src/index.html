@@ -20,6 +20,10 @@
           <img margin="10" src="image/GitHubExplorer-logo.png" alt="GitHubExplorer-logo" width="54px" height="46px">
           <h1 flex-align="self-center" font="f20">GitHub Explorer</h1>
         </a>
+        <div flex="1"></div>
+        <div flex-align="self-center" v-if="loginUser">
+          <span class="pointer" padding="10" color="link" @click="logout">登出</span>
+        </div>
       </header>
 
       <template v-if="pageLoading">
@@ -29,17 +33,20 @@
           <div v-if="isLogining">loading...</div>
 
           <!-- 需要登录 -->
-          <div v-else>
-            <div>请登录</div>
-            <div><input v-model.trim="token" placeholder="token"></div>
-            <div><button @click="login">登录</button></div>
+          <div class="login" v-else>
+            <div class="mb-10" font="f18">请登录</div>
+            <div><input padding="10" font="f16" v-model.trim="token" placeholder="请输入GitHub token"></div>
+            <div class="mt-10" layout="flex" flex-align="x-between">
+              <a href="https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/#creating-a-token" flex-align="self-center" target="_blank">创建GitHub token >></a>
+              <button @click="login">登录</button>
+            </div>
           </div>
 
         </section>
       </template>
 
       <!-- 主界面 -->
-      <template v-else>
+      <template v-else-if="loginUser">
         <section class="main" layout="flex" flex="1">
 
           <nav class="nav-bar" border="right" text="center">

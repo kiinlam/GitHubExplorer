@@ -181,6 +181,35 @@ p {
     height: 100%;
 }
 
+.login {
+    margin-top: -100px;
+    padding: 20px;
+    border: 1px solid #c3c3c3;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0px #c7c7c7;
+    background: #f8f8f8;
+}
+.login input {
+    border: 0;
+    border-bottom: 1px solid #13c022;
+    width: 300px;
+    background: #fcfcfc;
+    outline: 0;
+    color: #13c022;
+}
+.login button {
+    padding: 10px 30px;
+    background: #13c022;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    border: 0;
+    color: #fff;
+}
+.login button:hover, .login button:active {
+    background: #10801a;
+}
+
 .nav-bar {
     width: 48px;
     background: #eeeeee;
