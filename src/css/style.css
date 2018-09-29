@@ -112,8 +112,14 @@ p {
 .w100 {
     width: 100px;
 }
+.w160 {
+    width: 160px;
+}
 .w200 {
     width: 200px;
+}
+.w220 {
+    width: 220px;
 }
 .w280 {
     width: 280px;

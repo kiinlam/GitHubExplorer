@@ -13,7 +13,7 @@ var component = {
   template: `
     <section class="detail-subject" layout="flex" flex="1">
       <!-- 基本信息 -->
-      <div class="mr-20" padding="10">
+      <div class="mr-20 w220" padding="10">
         <div class="img-wrap detail-subject-avatar">
           <img class="avatar" :src="nodeData.avatarUrl" :alt="nodeData.login">
         </div>
@@ -81,13 +81,11 @@ var component = {
 
         <template v-if="nodeData.organizations.nodes.length">
           <div class="mt-10" border="top">
-            <p padding="10" border="bottom" bg="white">组织<span class="numerical">{{ nodeData.organizations.totalCount }}</span></p>
-            <div v-for="node in nodeData.organizations.nodes" bg="white">
-              <div layout="flex" padding="10" border="bottom">
-                <span class="w50"><img :src="node.avatarUrl" :alt="node.name"></span>
-                <span class="w200">{{ node.name }}</span>
-                <span class="w50">{{ node.members.totalCount }}人</span>
-                <span>{{ node.url }}</span>
+            <p padding="10" border="bottom" bg="white">组织<span class="numerical ml-10">{{ nodeData.organizations.totalCount }}</span></p>
+            <div layout="flex" flex-flow="wrap" bg="white">
+              <div padding="10" align="center" v-for="node in nodeData.organizations.nodes">
+                <div class="w50"><img width="20" height="20" :src="node.avatarUrl" alt="{{ node.members.totalCount }}人"></div>
+                <div font="f12" title="{{ node.url }}">{{ node.name }}</div>
               </div>
             </div>
           </div>

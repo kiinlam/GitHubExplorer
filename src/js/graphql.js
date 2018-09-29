@@ -11,11 +11,15 @@ function init (token) {
   });
 };
 
+
+
 // 抓取用户信息
-function fetchUserData (login) {
+function fetchUser(login, option) {
+  var option = option || {};
+  var login = !login ? 'viewer' : 'user(login:"' + login + '")';
   var query = `{
-    ${ !login ? 'viewer' : 'user(login:"${login}")' } {
-      avatarUrl(size: 200)
+    ${ login } {
+      avatarUrl(size: ${option.size || 200})
       bio
       company
       createdAt
@@ -102,14 +106,14 @@ function fetchUserData (login) {
       viewerIsFollowing
       websiteUrl
     }
-  }`
+  }`;
   return client.request(query);
 };
 
 // 抓取用户repos
 function fetchRepos (key, login, cursor) {
   var dataList = { repos: 'repositories', stars: 'starredRepositories' }[key];
-  var after = cursor ? 'after: ' + cursor + ',' : '';
+  var after = cursor ? 'after: "' + cursor + '",' : '';
   var own = { repos: 'affiliations:OWNER,', stars: '' }[key];
   var orderField = { repos: 'PUSHED_AT', stars: 'STARRED_AT' }[key];
   var query = `query ($login: String!, $count: Int!) {
@@ -233,10 +237,117 @@ function fetchRepo(owner, name) {
   return client.request(query, variables);
 };
 
+// 抓取follower列表
+function fetchFollowers(key, login, cursor) {
+  var dataList = { followers: 'followers', followings: 'following' }[key];
+  var after = cursor ? 'after: "' + cursor + '",' : '';
+  var query = `query ($login: String!, $count: Int!) {
+    user(login: $login) {
+      dataList: ${dataList}(first: $count, ${after}) {
+        nodes {
+          avatarUrl(size: 50)
+          bio
+          location
+          login
+          name
+          viewerCanFollow
+          viewerIsFollowing
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+      }
+    }
+  }`;
+
+  var variables = {
+    login: login,
+    count: 10
+  };
+
+  return client.request(query, variables);
+};
+
+// 抓取follower
+function fetchFollower(login, option) {
+  var option = option || {};
+  var login = !login ? 'viewer' : 'user(login:"' + login + '")';
+  var query = `{
+    ${ login} {
+      avatarUrl(size: ${option.size || 200})
+      bio
+      company
+      createdAt
+      email
+      followers {
+        totalCount
+      }
+      following {
+        totalCount
+      }
+      isHireable
+      issueComments {
+        totalCount
+      }
+      issues {
+        totalCount
+      }
+      location
+      login
+      name
+      organizations(first:100) {
+        totalCount
+        nodes {
+          avatarUrl(size:20)
+          name
+        }
+      }
+      pullRequests {
+        totalCount
+      }
+      repositories(first:6, affiliations:OWNER, orderBy:{field:STARGAZERS, direction: DESC}) {
+        totalCount
+        nodes {
+          description
+          forks {
+            totalCount
+          }
+          isFork
+          languages(first:1) {
+            nodes {
+              color
+              name
+            }
+          }
+          name
+          stargazers {
+            totalCount
+          }
+          url
+        }
+      }
+      repositoriesContributedTo {
+        totalCount
+      }
+      starredRepositories {
+        totalCount
+      }
+      url
+      viewerCanFollow
+      viewerIsFollowing
+      websiteUrl
+    }
+  }`;
+  return client.request(query);
+};
+
 export default {
   client,
   init,
-  fetchUserData,
+  fetchUser,
   fetchRepos,
-  fetchRepo
+  fetchRepo,
+  fetchFollowers,
+  fetchFollower
 };

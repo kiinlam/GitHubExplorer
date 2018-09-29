@@ -51,7 +51,7 @@
           <section class="list-user" border="right" v-if="navType === 'user'">
 
             <div class="bg-minor active" padding="10" border="bottom">
-              <div class="pointer" layout="flex" @click="userlistClick(currentNodeData)">
+              <div class="pointer" layout="flex" @click="userMenuClick(currentNodeData)">
                 <div class="img-wrap list-user-avatar">
                   <img class="avatar" :src="currentNodeData.avatarUrl" :alt="currentNodeData.login">
                 </div>
@@ -61,10 +61,10 @@
                 </div>
               </div>
               <div>
-                <div class="mt-5 minor pointer link-active" font="f12" @click="showList('repo')">Repositories <span class="numerical flr">{{ currentNodeData.repositories.totalCount }}</span></div>
-                <div class="mt-5 minor pointer link-active" font="f12" @click="showList('star')">Stars <span class="numerical flr">{{ currentNodeData.starredRepositories.totalCount }}</span></div>
-                <div class="mt-5 minor pointer link-active" font="f12">Followers <span class="numerical flr">{{ currentNodeData.followers.totalCount }}</span></div>
-                <div class="mt-5 minor pointer link-active" font="f12">Following <span class="numerical flr">{{ currentNodeData.following.totalCount }}</span></div>
+                <div class="mt-5 minor pointer link-active" font="f12" @click="showRepoList('repo')">Repositories <span class="numerical flr">{{ currentNodeData.repositories.totalCount }}</span></div>
+                <div class="mt-5 minor pointer link-active" font="f12" @click="showRepoList('star')">Stars <span class="numerical flr">{{ currentNodeData.starredRepositories.totalCount }}</span></div>
+                <div class="mt-5 minor pointer link-active" font="f12" @click="showFollowerList('follower')">Followers <span class="numerical flr">{{ currentNodeData.followers.totalCount }}</span></div>
+                <div class="mt-5 minor pointer link-active" font="f12" @click="showFollowerList('following')">Following <span class="numerical flr">{{ currentNodeData.following.totalCount }}</span></div>
               </div>
             </div>
 
@@ -119,9 +119,11 @@
 
           <!-- 过滤列表 -->
           <list-filter-component 
+            :list-type="subjectType" 
             :node-data="currentSubjectData" 
-            :list="filterListData" 
-            @repo-click="repolistClick" 
+            :list-data="filterListData" 
+            @repo-click="repoListClick" 
+            @follower-click="followerListClick" 
             @loadmore="loadmore" 
           ></list-filter-component>
 
@@ -136,6 +138,12 @@
             v-else-if="subjectType === 'repo' || subjectType === 'star'"
             :node-data="currentSubjectData" 
           ></repo-detail-component>
+
+          <!-- follower详情 -->
+          <follower-detail-component 
+            v-else-if="subjectType === 'follower' || subjectType === 'following'" 
+            :node-data="currentSubjectData"
+          ></follower-detail-component>
 
           <!-- 组织详情 -->
           <template v-else-if="subjectType === 'org'">

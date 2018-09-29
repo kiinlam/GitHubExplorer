@@ -2,6 +2,7 @@ import gql from './graphql.js'; // graphql 请求管理
 import userDetailComponent from '../components/user-detail.js';  // 用户详情repo模块组件
 import listFilterComponent from '../components/list-filter.js'; // 列表展示组件
 import repoDetailComponent from '../components/repo-detail.js'; // repo详情组件
+import followerDetailComponent from '../components/follower-detail.js'; // follower详情组件
 
 // 过滤器-时间转换
 Vue.filter('formatTime', function (val) {
@@ -19,14 +20,18 @@ new Vue({
   components: {
     'user-detail-component': userDetailComponent,
     'list-filter-component': listFilterComponent,
-    'repo-detail-component': repoDetailComponent
+    'repo-detail-component': repoDetailComponent,
+    'follower-detail-component': followerDetailComponent
   },
   data: {
     token: localStorage.getItem('token') || '',
     pageLoading: 1,
     isLogining: 0,
     loginUser: null, // 登录用户
-    users: [], // 用户组
+    userStore: {}, // 以用户名为key的用户数据集合
+    users: {}, // 以用户名为key的follower集合
+    followers: {}, // 以用户名为key的follower集合
+    followings: {}, // 以用户名为key的following集合
     repos: {}, // 以用户名为key的repo集合
     stars: {}, // 以用户名为key的star集合
     navType: '', // 当前类别
@@ -53,7 +58,7 @@ new Vue({
       // 显示loading状态
       this.isLogining = 1;
       // 尝试请求用户数据
-      gql.fetchUserData()
+      gql.fetchUser()
         .then(function(res) {
           // 请求成功，保存token
           localStorage.setItem('token', vm.token);
@@ -72,9 +77,16 @@ new Vue({
         });
     },
 
-    // 显示star列表
+    // 用户列表点击事件
+    userMenuClick: function (node) {
+      this.filterListData = { nodes: [], pageInfo: null };
+      this.currentNodeData = node;
+      this.subjectType = 'user';
+    },
+
+    // 显示repo列表
     // @param {string} type - repo or star
-    showList: function (type) {
+    showRepoList: function (type) {
       var login = this.currentNodeData.login;
       var key = type + 's';
       var data = this[key];
@@ -89,20 +101,36 @@ new Vue({
       this.subjectType = type;
     },
 
-    // 用户列表点击事件
-    userlistClick: function (node) {
-      this.filterListData = { nodes: [], pageInfo: null };
-      this.currentNodeData = node;
-      this.subjectType = 'user';
+    // 显示follower列表
+    // @param {string} type - follower or following
+    showFollowerList: function (type) {
+      var login = this.currentNodeData.login;
+      var key = type + 's';
+      var data = this[key];
+
+      if (data[login]) {
+        this.filterListData = data[login];
+      } else {
+        data[login] = { nodes: [], pending: 0, pageInfo: null };
+        this.filterListData = data[login];
+        this.fetchFollowers(key, login);
+      }
+      this.subjectType = type;
     },
 
     // repo列表点击事件
-    repolistClick: function (node) {
-      var login = this.currentNodeData.login;
+    repoListClick: function (node) {
       this.currentSubjectData = node;
-      // this.subjectType = 'repo';
       if (!node.status) {
         this.fetchRepo(node);
+      }
+    },
+
+    // follower列表点击事件
+    followerListClick: function (node) {
+      this.currentSubjectData = node;
+      if (!node.status) {
+        this.fetchFollower(node);
       }
     },
 
@@ -169,7 +197,68 @@ new Vue({
       var key = type + 's';
       var login = this.currentNodeData.login;
       var cursor = this.filterListData.pageInfo.endCursor;
-      this.fetchRepos(key, login, cursor);
+      if (type === 'repo' || type === 'star') {
+        this.fetchRepos(key, login, cursor);
+      } else if (type === 'follower' || type === 'following') {
+        this.fetchFollowers(key, login, cursor);
+      }
+    },
+
+    // 抓取用户列表
+    fetchFollowers: function (key, login, cursor) {
+      var data = this[key][login];
+
+      if (!login || data.pending === 1) {
+        return;
+      }
+
+      // 设置为pending状态
+      data.pending = 1;
+
+      gql.fetchFollowers(key, login, cursor)
+        .then(function (res) {
+          var obj = res.user.dataList;
+          data.pageInfo = obj.pageInfo;
+          data.nodes = data.nodes.concat(obj.nodes);
+          data.pending = 0;
+        })
+        .catch(function (err) {
+          var errors = err.response.errors;
+          errors.forEach(function (i) {
+            console.error(i.message);
+          });
+          data.pending = 0;
+        });
+    },
+
+    // 抓取follow列表
+    fetchFollower: function (node) {
+      var vm = this;
+      var login = node.login;
+
+      if (!login || node.status === 1) {
+        return;
+      }
+
+      // 设置status状态
+      // 1：加载中
+      // 2：已更新
+      // 无状态表示需要加载数据
+      // node.status = 1;
+      vm.$set(node, 'status', 1);
+
+      gql.fetchFollower(login)
+        .then(function (res) {
+          Object.assign(node, res.user);
+          node.status = 2;
+        })
+        .catch(function (err) {
+          var errors = err.response.errors;
+          errors.forEach(function (i) {
+            console.error(i.message);
+          });
+          node.status = 0;
+        });
     },
   }
 });
