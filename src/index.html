@@ -140,22 +140,15 @@
             :node-data="currentNodeData" 
           ></user-detail-component>
 
-          <!-- 仓库详情 -->
-          <repo-detail-component
-            v-else-if="subjectType === 'repo' || subjectType === 'star'"
-            :node-data="currentSubjectData" 
-          ></repo-detail-component>
-
-          <!-- follower详情 -->
-          <follower-detail-component 
-            v-else-if="subjectType === 'follower' || subjectType === 'following'" 
-            :node-data="currentSubjectData"
-          ></follower-detail-component>
-
           <!-- 组织详情 -->
           <template v-else-if="subjectType === 'org'">
 
           </template>
+
+          <subject-detail-component 
+            v-else
+            :node-data="currentSubjectData"
+          ></subject-detail-component>
 
           <!-- 默认 -->
           <section class="detail-subject" flex="1" v-else>

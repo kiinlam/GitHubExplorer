@@ -1,32 +1,16 @@
-var initList = function (text) {
-  return {
-    data: function () {
-      return {
-        text: text
-      };
-    },
-    template: `
-      <section class="detail-subject" flex="1" flex-align="self-center" text="center">
-        {{ text }}
-      </section>
-    `
-  };
-};
-
-var dataList = function () { 
-  return {
-    props: {
-      nodeData: {
-        type: null,
-        required: true
-      }
-    },
-    methods: {
-      repoClick: function (node) {
-        this.$emit('repo-click', node);
-      }
-    },
-    template: `
+var component = {
+  props: {
+    nodeData: {
+      type: null,
+      required: true
+    }
+  },
+  methods: {
+    repoClick: function (node) {
+      this.$emit('repo-click', node);
+    }
+  },
+  template: `
       <section class="detail-subject bg-minor" flex="1">
         <div layout="flex" padding="10" bg="white" border="bottom">
           <div flex="1">
@@ -120,30 +104,6 @@ var dataList = function () {
 
       </section>
     `
-  };
-};
-
-var component = {
-  functional: true,
-  render: function (createElement, context) {
-    var props = context.props;
-    var nodeData = props.nodeData;
-    var elem = null;
-    
-    if (!nodeData) {
-      elem = initList('请选择Repository');
-    } else if (nodeData.status === 2) {
-      elem = dataList();
-    } else {
-      elem = initList('加载中...');
-    }
-    
-    return createElement(
-      elem,
-      context.data,
-      context.children
-    );
-  }
 };
 
 export default component;

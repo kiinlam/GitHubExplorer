@@ -19,7 +19,7 @@ var component = {
       <div v-if="nodeData.bio">
         <small color="minor">{{ nodeData.bio }}</small>
       </div>
-      <div class="mt-5" font="f12" color="minor" v-if="nodeData.location">
+      <div class="mt-5" font="f12" color="cold" v-if="nodeData.location">
         {{ nodeData.location }}
       </div>
     </div>

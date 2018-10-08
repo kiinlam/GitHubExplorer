@@ -1,32 +1,16 @@
 import reposComponent from '../components/repos.js';  // 用户详情repo模块组件
 
-var initList = function (text) {
-  return {
-    data: function () {
-      return {
-        text: text
-      };
-    },
-    template: `
-      <section class="detail-subject" flex="1" flex-align="self-center" text="center">
-        {{ text }}
-      </section>
-    `
-  };
-};
-
-var dataList = function () {
-  return {
-    components: {
-      'repos-component': reposComponent
-    },
-    props: {
-      nodeData: {
-        type: null,
-        required: true
-      }
-    },
-    template: `
+var component = {
+  components: {
+    'repos-component': reposComponent
+  },
+  props: {
+    nodeData: {
+      type: null,
+      required: true
+    }
+  },
+  template: `
       <section class="detail-subject" layout="flex" flex="1">
         <!-- 基本信息 -->
         <div class="mr-20 w220" padding="10">
@@ -138,30 +122,6 @@ var dataList = function () {
 
       </section>
     `
-  };
-};
-
-var component = {
-  functional: true,
-  render: function (createElement, context) {
-    var props = context.props;
-    var nodeData = props.nodeData;
-    var elem = null;
-
-    if (!nodeData) {
-      elem = initList('请选择User');
-    } else if (nodeData.status === 2) {
-      elem = dataList();
-    } else {
-      elem = initList('加载中...');
-    }
-
-    return createElement(
-      elem,
-      context.data,
-      context.children
-    );
-  }
 };
 
 export default component;

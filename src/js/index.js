@@ -1,8 +1,7 @@
 import gql from './graphql.js'; // graphql 请求管理
 import userDetailComponent from '../components/user-detail.js';  // 用户详情repo模块组件
 import listFilterComponent from '../components/list-filter.js'; // 列表展示组件
-import repoDetailComponent from '../components/repo-detail.js'; // repo详情组件
-import followerDetailComponent from '../components/follower-detail.js'; // follower详情组件
+import subjectDetailComponent from '../components/subject-detail.js'; // subject详情组件
 
 // 过滤器-时间转换
 Vue.filter('formatTime', function (val) {
@@ -20,8 +19,7 @@ new Vue({
   components: {
     'user-detail-component': userDetailComponent,
     'list-filter-component': listFilterComponent,
-    'repo-detail-component': repoDetailComponent,
-    'follower-detail-component': followerDetailComponent
+    'subject-detail-component': subjectDetailComponent
   },
   data: {
     token: localStorage.getItem('token') || '',
@@ -122,7 +120,6 @@ new Vue({
         this.filterListData = data[login];
         this.fetchRepos(key, login);
       }
-      this.currentSubjectData = null;
       this.subjectType = type;
     },
 
@@ -144,7 +141,6 @@ new Vue({
         this.filterListData = data[login];
         this.fetchFollowers(key, login);
       }
-      this.currentSubjectData = null;
       this.subjectType = type;
     },
 
@@ -152,6 +148,7 @@ new Vue({
     repoListClick: function (node) {
       this.currentSubjectData = node;
       if (!node.status) {
+        this.$set(node, 'nodeType', this.subjectType);
         this.fetchRepo(node);
       }
     },
@@ -160,6 +157,7 @@ new Vue({
     followerListClick: function (node) {
       this.currentSubjectData = node;
       if (!node.status) {
+        this.$set(node, 'nodeType', this.subjectType);
         this.fetchFollower(node);
       }
     },
