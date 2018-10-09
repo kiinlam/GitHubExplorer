@@ -34,6 +34,13 @@ p {
     width: 100%;
 }
 
+.pos-abs {
+    position: absolute;
+}
+.pos-rel {
+    position: relative;
+}
+
 .ml-3 {
     margin-left: 3px;
 }
@@ -45,6 +52,9 @@ p {
 }
 .mt-10 {
     margin-top: 10px;
+}
+.mt-16 {
+    margin-top: 16px;
 }
 .mr-3 {
     margin-right: 3px;
@@ -148,6 +158,11 @@ p {
     background: transparent no-repeat center;
     background-size: 14px;
 }
+.icon-large {
+    width: 50px;
+    height: 50px;
+    background-size: 20px;
+}
 
 .icon-stars {
     background-image: url(../image/star-full.png);
@@ -175,6 +190,15 @@ p {
 }
 .icon-clock {
     background-image: url(../image/clock.png);
+}
+.icon-pin {
+    background-image: url(../image/pin-outline.png);
+}
+.icon-paperclip {
+    background-image: url(../image/paperclip.png);
+}
+.icon-follow {
+    background-image: url(../image/follow.png);
 }
 
 #app {
@@ -226,18 +250,11 @@ p {
 }
 .link-active {
     padding: 3px 5px;
-    border-bottom: 1px dashed #fff;
 }
 .link-active:hover {
-    border-bottom-color: #dedede; 
-}
-.link-active:active {
     background: rgba(98,98,98,0.08);
 }
 
-.list-user {
-    width: 180px;
-}
 .bg-minor {
     background: #fafafa;
 }
@@ -245,6 +262,41 @@ p {
     background: #fff;
 }
 
+.list-user {
+    width: 180px;
+}
+.list-action-btns {
+    width: 50px;
+    position: absolute;
+    top: 0;
+    right: -50px;
+    bottom: 0;
+    background: rgba(255,255,255,0.8);
+    -moz-transition: right 100ms linear;
+    -webkit-transition: right 100ms linear;
+    transition: right 100ms linear;
+}
+.list-user .list-action-btns {
+    height: 62px;
+    bottom: auto;
+}
+.list-user-item:hover .list-action-btns {
+    right: 0;
+}
+.list-action-btns div {
+    opacity: 0.2;
+}
+.list-action-btns div.active {
+    opacity: 0.6;
+    background: #eee;
+}
+.list-action-btns div:hover {
+    opacity: 0.4;
+    background: #c7c7c7;
+}
+.list-user-item-top {
+    height: 42px;
+}
 .list-filter {
     width: 240px;
     height: 100%;
@@ -316,4 +368,8 @@ p {
 
 .repo-card {
     width: 300px;
+}
+
+.info-user-bio {
+    word-break: break-all;
 }
