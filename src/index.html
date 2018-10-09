@@ -30,7 +30,7 @@
         <section layout="flex" flex="1" flex-align="center">
 
           <!-- 加载界面 -->
-          <div v-if="isLogining">loading...</div>
+          <div v-if="isLogining">加载中...</div>
 
           <!-- 需要登录 -->
           <div class="login" v-else>
@@ -50,8 +50,8 @@
         <section class="main" layout="flex" flex="1">
 
           <nav class="nav-bar" border="right" text="center">
-            <div class="nav-bar-link nav-user active" :class="{ active: navType === 'user' }"><img src="image/github.png" alt="user"></div>
-            <div class="nav-bar-link nav-users" :class="{ active: navType === 'users' }"><img src="image/users.png" alt="users"></div>
+            <div class="nav-bar-link nav-user" :class="{ active: navType === 'user' }" @click="navClick('user')"><img src="image/github.png" alt="user"></div>
+            <div class="nav-bar-link nav-users" :class="{ active: navType === 'users' }" @click="navClick('users')"><img src="image/users.png" alt="users"></div>
           </nav>
           
           <!-- 登录用户 -->
@@ -78,59 +78,24 @@
           </section>
 
           <!-- 用户列表 -->
-          <section class="list-user" border="right" v-else-if="navType === 'users'">
-
-            <div class="bg-minor active" padding="10" border="bottom">
-              <div layout="flex">
-                <div class="img-wrap user-avatar">
-                  <img class="avatar" src="image/github.png" alt="username">
-                </div>
-                <div class="info-user ml-10">
-                  <div class="pointer">大名鼎鼎</div>
-                  <small color="minor">小名</small>
-                </div>
-              </div>
-              <div>
-                <div class="mt-10 minor pointer" font="f12">Repositories <span class="numerical flr">88</span></div>
-                <div class="mt-10 minor pointer" font="f12">Stars <span class="numerical flr">88</span></div>
-                <div class="mt-10 minor pointer" font="f12">Followers <span class="numerical flr">88</span></div>
-                <div class="mt-10 minor pointer" font="f12">Following <span class="numerical flr">88</span></div>
-              </div>
-            </div>
-
-            <div class="bg-minor" padding="10" border="bottom">
-              <div layout="flex">
-                <div class="img-wrap user-avatar">
-                  <img class="avatar" src="image/github.png" alt="username">
-                </div>
-                <div class="info-user ml-10">
-                  <div class="pointer">大名鼎鼎</div>
-                  <small color="minor">小名</small>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-minor" padding="10" border="bottom">
-              <div layout="flex">
-                <div class="img-wrap user-avatar">
-                  <img class="avatar" src="image/github.png" alt="username">
-                </div>
-                <div class="info-user ml-10">
-                  <div class="pointer">大名鼎鼎</div>
-                  <small color="minor">小名</small>
-                </div>
-              </div>
-            </div>
-  
-          </section>
+          <user-menu-component
+            v-else-if="navType === 'users'"
+            :list-data="userStore"
+            :node-data="currentNodeData"
+            @user-menu-click="userMenuClick"
+            @show-repo-list="showRepoList"
+            @show-follower-list="showFollowerList"
+            @user-paperclip-click="followerPaperclipClick"
+          ></user-menu-component>
 
           <!-- 过滤列表 -->
           <list-filter-component 
             :list-type="subjectType" 
             :node-data="currentSubjectData" 
             :list-data="filterListData" 
-            @repo-click="repoListClick" 
-            @follower-click="followerListClick" 
+            @repo-click="repoClick" 
+            @follower-click="followerClick" 
+            @paperclip-click="followerPaperclipClick" 
             @loadmore="loadmore" 
           ></list-filter-component>
 
@@ -139,11 +104,6 @@
             v-if="subjectType === 'user'"
             :node-data="currentNodeData" 
           ></user-detail-component>
-
-          <!-- 组织详情 -->
-          <template v-else-if="subjectType === 'org'">
-
-          </template>
 
           <subject-detail-component 
             v-else

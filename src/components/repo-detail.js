@@ -14,7 +14,7 @@ var component = {
       <section class="detail-subject bg-minor" flex="1">
         <div layout="flex" padding="10" bg="white" border="bottom">
           <div flex="1">
-            <div font="f18 w700">{{ nodeData.name }}</div>
+            <div font="f18 w700"><a :href="nodeData.url" target="_blank">{{ nodeData.name }}</a></div>
             <small v-if="nodeData.isFork">forked from {{ nodeData.parent.nameWithOwner }}</small>
           </div>
           <div layout="flex" flex-align="y-start">
@@ -29,7 +29,7 @@ var component = {
           <div padding="10" border="bottom">Code<span class="flr" color="minor" font="f12" v-if="nodeData.licenseInfo">{{ nodeData.licenseInfo.name }}</span></div>
 
           <div padding="10" border="bottom">
-            <div>{{ nodeData.description }} <span class="ml-10" color="link">{{ nodeData.homepageUrl }}</span></div>
+            <div>{{ nodeData.description }} <a class="ml-10" :href="nodeData.homepageUrl" target="_blank">{{ nodeData.homepageUrl }}</a></div>
             <div class="mt-5" font="f12" color="minor" v-if="nodeData.repositoryTopics.nodes.length">
               Topics:<span class="ml-10" v-for="node in nodeData.repositoryTopics.nodes">{{ node.topic.name }}</span>
             </div>

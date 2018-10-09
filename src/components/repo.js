@@ -6,8 +6,8 @@ var component = {
     }
   },
   template: `
-    <div class="pointer" @click="$emit('repo-click', nodeData)">
-      <div class="mt-5 mb-5" color="link" font="f14 w700">{{ nodeData.name }}</div>
+    <div @click="$emit('repo-click', nodeData)">
+      <div class="mt-5 mb-5" font="f14 w700"><a :href="nodeData.url" target="_blank">{{ nodeData.name }}</a></div>
       <div color="minor" flex="1" font="f12">{{ nodeData.description }}</div>
       <div color="minor">
         <div class="repo-tag" v-if="nodeData.isFork"><span>Forked</span></div>

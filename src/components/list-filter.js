@@ -43,7 +43,7 @@ var repoList = function () {
       template: `
         <section class="list-filter" style="overflow-x: hidden; overflow-y: auto;">
           <repo-component
-            class="bg-minor"
+            class="bg-minor pointer"
             padding="10"
             border="bottom"
             v-for="node in listData.nodes"
@@ -83,6 +83,9 @@ var followerList = function () {
       methods: {
         followerClick: function (node) {
           this.$emit('follower-click', node);
+        },
+        paperclipClick: function (node) {
+          this.$emit('paperclip-click', node);
         }
       },
       template: `
@@ -95,6 +98,7 @@ var followerList = function () {
             :node-data="node"
             :class="{active: node === nodeData}"
             @user-click="followerClick"
+            @user-paperclip-click="paperclipClick"
           ></user-component>
           <div class="pointer" padding="10" text="center" color="minor" v-if="listData.pending && listData.pageInfo">加载中...</div>
           <div class="pointer" padding="10" text="center" color="link" v-else-if="listData.pageInfo.hasNextPage" @click="$emit('loadmore')">加载更多</div>

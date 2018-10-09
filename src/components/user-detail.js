@@ -1,6 +1,21 @@
 import reposComponent from '../components/repos.js';  // 用户详情repo模块组件
 
-var component = {
+var initList = function (text) {
+  return {
+    data: function () {
+      return {
+        text: text
+      };
+    },
+    template: `
+      <section class="detail-subject" flex="1" flex-align="self-center" text="center">
+        {{ text }}
+      </section>
+    `
+  };
+};
+
+var userComponent = {
   components: {
     'repos-component': reposComponent
   },
@@ -19,7 +34,7 @@ var component = {
         </div>
         <div class="mt-10" font="f20">{{ nodeData.name }}</div>
         <div class="mb-10" font="f12" color="minor">{{ nodeData.login }}</div>
-        <div class="mb-10" font="f12" color="minor">{{ nodeData.url }}</div>
+        <div class="mb-10" font="f12"><a color="minor" :href="nodeData.url" target="_blank">{{ nodeData.url }}</a></div>
         <div>{{ nodeData.bio }}</div>
         <div class="mt-10 pt-10" border="top" color="dark">
           <div class="mb-5" v-if="nodeData.company">
@@ -36,7 +51,7 @@ var component = {
           </div>
           <div class="mb-5" v-if="nodeData.websiteUrl">
             <span class="icon icon-website"></span>
-            <span class="ml-5">{{ nodeData.websiteUrl }}</span>
+            <span class="ml-5"><a color="dark" :href="nodeData.websiteUrl" target="_blank">{{ nodeData.websiteUrl }}</a></span>
           </div>
         </div>
         <div class="mt-10 pt-10" border="top" color="dark" v-if="nodeData.isHireable">
@@ -84,8 +99,10 @@ var component = {
             <p padding="10" border="bottom" bg="white">组织<span class="numerical ml-10">{{ nodeData.organizations.totalCount }}</span></p>
             <div layout="flex" flex-flow="wrap" bg="white">
               <div padding="10" align="center" v-for="node in nodeData.organizations.nodes">
-                <div class="w50"><img width="20" height="20" :src="node.avatarUrl" alt="node.members.totalCount + '人'"></div>
-                <div font="f12" title="node.url">{{ node.name }}</div>
+                <a :href="node.url" target="_blank">
+                  <div class="w50"><img width="20" height="20" :src="node.avatarUrl" alt="node.members.totalCount + '人'"></div>
+                  <div font="f12" title="node.url">{{ node.name }}</div>
+                </a>
               </div>
             </div>
           </div>
@@ -105,6 +122,29 @@ var component = {
 
     </section>
   `
+};
+
+var component = {
+  functional: true,
+  render: function (createElement, context) {
+    var props = context.props;
+    var nodeData = props.nodeData;
+    var elem = null;
+
+    if (!nodeData) {
+      elem = initList('请选择用户');
+    } else if (nodeData.status === 2) {
+      elem = userComponent;
+    } else {
+      elem = initList('加载中...');
+    }
+
+    return createElement(
+      elem,
+      context.data,
+      context.children
+    );
+  }
 };
 
 export default component;

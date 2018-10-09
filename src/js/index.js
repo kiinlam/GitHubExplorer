@@ -1,4 +1,5 @@
 import gql from './graphql.js'; // graphql 请求管理
+import userMenuComponent from '../components/user-menu.js';  // 用户菜单组件
 import userDetailComponent from '../components/user-detail.js';  // 用户详情repo模块组件
 import listFilterComponent from '../components/list-filter.js'; // 列表展示组件
 import subjectDetailComponent from '../components/subject-detail.js'; // subject详情组件
@@ -17,6 +18,7 @@ Vue.filter('toFixed', function (val, digits) {
 new Vue({
   el: '#app',
   components: {
+    'user-menu-component': userMenuComponent,
     'user-detail-component': userDetailComponent,
     'list-filter-component': listFilterComponent,
     'subject-detail-component': subjectDetailComponent
@@ -26,8 +28,7 @@ new Vue({
     pageLoading: 1,
     isLogining: 0,
     loginUser: null, // 登录用户
-    userStore: {}, // 以用户名为key的用户数据集合
-    users: {}, // 以用户名为key的follower集合
+    userStore: [], // 以用户名为key的用户数据集合
     followers: {}, // 以用户名为key的follower集合
     followings: {}, // 以用户名为key的following集合
     repos: {}, // 以用户名为key的repo集合
@@ -68,6 +69,7 @@ new Vue({
           // 请求成功，保存token
           localStorage.setItem('token', vm.token);
           vm.pageLoading = 0;
+          res.viewer.status = 2;
           vm.loginUser = res.viewer;
           vm.currentNodeData = res.viewer;
           vm.navType = 'user';
@@ -95,11 +97,26 @@ new Vue({
       localStorage.removeItem('token');
     },
 
+    // 导航栏点击事件
+    navClick: function (type) {
+      this.navType = type;
+      if (type === 'user') {
+        this.subjectType = 'user';
+        this.currentNodeData = this.loginUser;
+      }
+    },
+
     // 用户列表点击事件
     userMenuClick: function (node) {
-      this.filterListData = { nodes: [], pageInfo: null };
-      this.currentNodeData = node;
-      this.subjectType = 'user';
+      if (this.currentNodeData !== node) {
+        this.currentNodeData = node;
+        this.filterListData = { nodes: [], pageInfo: null };
+        this.currentSubjectData = null;
+        this.subjectType = 'user';
+        if (!node.status) {
+          this.fetchUser(node);
+        }
+      }
     },
 
     // 显示repo列表
@@ -145,7 +162,7 @@ new Vue({
     },
 
     // repo列表点击事件
-    repoListClick: function (node) {
+    repoClick: function (node) {
       this.currentSubjectData = node;
       if (!node.status) {
         this.$set(node, 'nodeType', this.subjectType);
@@ -154,11 +171,22 @@ new Vue({
     },
 
     // follower列表点击事件
-    followerListClick: function (node) {
+    followerClick: function (node) {
       this.currentSubjectData = node;
+      this.$set(node, 'nodeType', this.subjectType);
       if (!node.status) {
-        this.$set(node, 'nodeType', this.subjectType);
-        this.fetchFollower(node);
+        this.fetchUser(node);
+      }
+    },
+
+    // 用户收集
+    followerPaperclipClick: function (node) {
+      var userStore = this.userStore;
+      var idx = userStore.indexOf(node);
+      if (idx === -1) {
+        userStore.push(node);
+      } else {
+        userStore.splice(idx, 1);
       }
     },
 
@@ -262,8 +290,8 @@ new Vue({
         });
     },
 
-    // 抓取follow列表
-    fetchFollower: function (node) {
+    // 抓取user
+    fetchUser: function (node) {
       var vm = this;
       var login = node.login;
 
@@ -278,7 +306,7 @@ new Vue({
       // node.status = 1;
       vm.$set(node, 'status', 1);
 
-      gql.fetchFollower(login)
+      gql.fetchUser(login)
         .then(function (res) {
           Object.assign(node, res.user);
           node.status = 2;
